@@ -109,6 +109,7 @@ public class AuthenticationController {
     @PostMapping("/signUpFishingInstructor")
     public ResponseEntity<String> registerFishingInstructor( @RequestBody UserRequestDTO userRequest) {
         User existUser = this.userService.findByUsername(userRequest.getUsername());
+        System.out.println("AHAHAHA"+existUser.getUsername());
         if (existUser != null) {
             return new ResponseEntity<>(EMAIL_ALREADY_IN_USE, HttpStatus.BAD_REQUEST);
         }
