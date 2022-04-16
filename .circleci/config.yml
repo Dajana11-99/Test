@@ -20,7 +20,7 @@ jobs:
 
      steps:
           - checkout:
-              path: ~/Test/src/test
+              path: ~/Test
           - run:
               name: Build
               command: mvn -B -DskipTests clean package
@@ -30,8 +30,6 @@ jobs:
           - run: 
               name: Analyze on SonarCloud
               command: mvn verify sonar:sonar -Dsonar.projectKey=Dajana11-99_ISA-FishingBooker
-
-
 workflows:
   say-hello-workflow:
     jobs:
