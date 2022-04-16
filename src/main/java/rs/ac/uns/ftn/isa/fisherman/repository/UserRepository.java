@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface UserRepository extends JpaRepository<User,Integer> {
 
-    @Query(value = "SELECT * FROM users WHERE username =: username  AND enabled=false ",nativeQuery = true)
+    @Query(value = "SELECT * FROM users WHERE username=:username",nativeQuery = true)
     User findByUsername(@Param("username")String username);
 
 
