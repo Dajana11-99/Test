@@ -9,7 +9,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface UserRepository extends JpaRepository<User,Integer> {
-    User findByUsername(String username );
+
+    @Query(value = "SELECT * FROM users WHERE username =: username  AND enabled=false ",nativeQuery = true)
+    User findByUsername(@Param("username")String username);
 
 
     @Query(value = "SELECT * FROM users WHERE role != 'ADMIN'  AND enabled=false ",nativeQuery = true)
