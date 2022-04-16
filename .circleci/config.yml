@@ -3,10 +3,7 @@
  version: 2.1
 
  orbs:
-   heroku: circleci/heroku@x.y # Use the Heroku orb in your config
-
-# Define a job to be invoked later in a workflow.
-# See: https://circleci.com/docs/2.0/configuration-reference/#jobs
+   heroku: circleci/heroku@1.2.6
 jobs:
   build-test-analyze:
      working_directory: ~/test-repository/src/main
