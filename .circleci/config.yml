@@ -7,7 +7,7 @@ orbs:
 
 jobs:
   build-test-analyze:
-     working_directory: ~/test-repository/src/main
+     working_directory: ~/Test/src/main
      docker:
           - image: cimg/openjdk:11.0
           - image: circleci/postgres:9.6.2-alpine
@@ -20,7 +20,7 @@ jobs:
 
      steps:
           - checkout:
-              path: ~/test-repository
+              path: ~/Test
           - run:
               name: Build
               command: mvn -B -DskipTests clean package
