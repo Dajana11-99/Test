@@ -45,9 +45,11 @@ public class AccountControllerTest {
     }
 
     @Test
+    @Transient
+    @Rollback(true)
     @WithMockUser(authorities = "ROLE_ADMIN")
     public void testActiveAccount() throws Exception {
-        UserRequestDTO userRequestDTO = new UserRequestDTO("reljin.magdalena@gmail.com","Magdalena","Reljin","CABINOWNER","asdasdasd",0.0);
+        UserRequestDTO userRequestDTO = new UserRequestDTO("nekikorisnikkorisnik@gmail.com","Magdalena","Reljin","CABINOWNER","asdasdasd",0.0);
         ObjectMapper objectMapper=new ObjectMapper();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         String json=objectMapper.writeValueAsString(userRequestDTO);
@@ -56,9 +58,11 @@ public class AccountControllerTest {
     }
 
     @Test
+    @Transient
+    @Rollback(true)
     @WithMockUser(authorities = "ROLE_ADMIN")
     public void testDenyAccount() throws Exception {
-        UserRequestDTO userRequestDTO = new UserRequestDTO("reljin.magdalena@gmail.com","Magdalena","Reljin","CABINOWNER","asdasdasd",0.0);
+        UserRequestDTO userRequestDTO = new UserRequestDTO("nekikorisnikkorisnik@gmail.com","Magdalena","Reljin","CLIENT","asdasdasd",0.0);
         ObjectMapper objectMapper=new ObjectMapper();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         String json=objectMapper.writeValueAsString(userRequestDTO);
