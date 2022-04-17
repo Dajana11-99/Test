@@ -35,4 +35,6 @@ public interface BoatReservationService {
     Set<Boat> getAvailableBoats(SearchAvailablePeriodsBoatAndAdventureDto searchAvailablePeriodsBoatDto);
 
     boolean makeReservation(BoatReservationDto boatReservationDto);
+
+    List<BoatReservation> findAll();
 }
