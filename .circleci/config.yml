@@ -45,7 +45,7 @@ workflows:
             - build-test-analyze
       - heroku/deploy-via-git:
           name: deploy-frontend
-          app-name: Fisherman-front
+          app-name: Fisherman-front1
           filters:
             branches:
               only:
