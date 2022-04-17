@@ -36,7 +36,7 @@ workflows:
       - build-test-analyze
       - heroku/deploy-via-git:
           name: deploy-backend
-          app-name: Fisherman-back
+          app-name: radiant-ridge-27869
           filters:
             branches:
               only:
