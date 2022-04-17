@@ -29,7 +29,9 @@ jobs:
               command: mvn test
           - run: 
               name: Analyze on SonarCloud
-              command: mvn verify sonar:sonar -Dsonar.projectKey=Dajana11-99_ISA-FishingBooker
+              env:
+                SONAR_TOKEN: a2039e6177608bf23e3198fabb6430dc79ce17d2
+              command: mvn verify sonar:sonar -Dsonar.projectKey=Dajana11-99_Test
 workflows:
   say-hello-workflow:
     jobs:
