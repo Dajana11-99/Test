@@ -6,6 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import rs.ac.uns.ftn.isa.fisherman.enums.RankType;
 import rs.ac.uns.ftn.isa.fisherman.model.*;
@@ -25,6 +26,9 @@ public class PaymentServiceTest {
     @Mock
     private RankRepository rankRepositoryMock;
 
+    @MockBean
+    private Client client;
+
     @InjectMocks
     private ReservationPaymentServiceImpl paymentService;
 
@@ -35,7 +39,8 @@ public class PaymentServiceTest {
     public void testCalculatePriceWithDiscountForClient() {
 
         Double totalPriceForReservation =500.00;
-        Client client = new Client(1L, "Mila", "Milic", "mika@gmail.com", "123", "123456", null);
+         client = new Client(1L, "Mila", "Milic", "mika@gmail.com", "123", "123456", null);
+        
         client.setUserRank(new UserRank(RankType.GOLD, 300));
 
         when(rankRepositoryMock.findAll()).thenReturn(Arrays.asList(new Rank(1L, RankType.BRONZE, 0, 0), new Rank(2L, RankType.SILVER, 150, 5), new Rank(3L, RankType.GOLD, 250, 10)));
