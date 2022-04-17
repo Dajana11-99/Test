@@ -228,6 +228,11 @@ public class BoatReservationServiceImpl implements BoatReservationService {
         return false;
     }
 
+    @Override
+    public List<BoatReservation> findAll() {
+        return boatReservationRepository.findAll();
+    }
+
     private void SendReservationMailToClient(BoatReservationDto boatReservationDto) {
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy. HH:mm:ss");

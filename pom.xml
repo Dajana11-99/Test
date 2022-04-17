@@ -24,9 +24,6 @@
 		<sonar.organization>dajana11-99</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io/</sonar.host.url>
 		<email.version>1.16.18</email.version>
-		<sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
-		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
-		<sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
 	</properties>
 
 
@@ -144,29 +141,18 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.7.0.201403182114</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<destFile>${sonar.jacoco.reportPath}</destFile>
-				</configuration>
-			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<source>10</source>
-					<target>10</target>
+							<source>10</source>
+							<target>10</target>
 				</configuration>
 			</plugin>
+
+
+
 		</plugins>
 	</build>
 
