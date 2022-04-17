@@ -31,6 +31,24 @@ jobs:
               name: Analyze on SonarCloud
               command: mvn verify sonar:sonar -Dsonar.projectKey=Dajana11-99_Test
 workflows:
-  say-hello-workflow:
+  deploy-workflow:
     jobs:
       - build-test-analyze
+      - heroku/deploy-via-git:
+          name: deploy-backend
+          app-name: Fisherman-back
+          filters:
+            branches:
+              only:
+                - main
+          requires:
+            - build-test-analyze
+      - heroku/deploy-via-git:
+          name: deploy-frontend
+          app-name: Fisherman-front
+          filters:
+            branches:
+              only:
+                - main
+          requires:
+            - deploy-backend
