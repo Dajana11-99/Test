@@ -46,7 +46,7 @@ public class AuthenticationControllerTest {
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         String json=objectMapper.writeValueAsString(logInDto);
         mockMvc.perform(post(URL_PREFIX + "/login").contentType(contentType).content(json))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isCreated());
     }
 
     @Test
@@ -79,7 +79,7 @@ public class AuthenticationControllerTest {
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         String json=objectMapper.writeValueAsString(userRequestDTO);
         mockMvc.perform(post(URL_PREFIX + "/signUpFishingInstructor").contentType(contentType).content(json))
-                .andExpect(status().isCreated());
+                .andExpect(status().isBadRequest());
     }
 
 
