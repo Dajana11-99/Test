@@ -1,0 +1,21 @@
+package com.example.demo.repository;
+import com.example.demo.model.Boat;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import java.util.List;
+import java.util.Set;
+
+public interface BoatRepository extends JpaRepository<Boat,Integer> {
+    Boat findById(Long id);
+    Boat findByName(String name);
+    @Query(value = "SELECT * FROM boat WHERE users_id=:users_id",nativeQuery = true)
+    List<Boat> findByOwnersId(@Param("users_id")Long id);
+    @Query(value = "SELECT * FROM boat WHERE users_id=:users_id and name=:name",nativeQuery = true)
+    Boat findByNameAndOwner(@Param("name")String name, @Param("users_id")Long usersId);
+    @Query(value = "SELECT avg(rating) FROM boat WHERE users_id=:users_id",nativeQuery = true)
+    Double findAvgBoatRatingByOwnerId(@Param("users_id")Long id);
+    @Query(value = "SELECT id FROM boat WHERE users_id=:users_id",nativeQuery = true)
+    Set<Integer> findBoatsIdByOwnersId(@Param("users_id")Long id);
+}
