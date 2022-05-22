@@ -34,13 +34,10 @@ workflows:
   deploy-workflow:
     jobs:
       - build-test-analyze
-      - heroku/deploy-via-git:
+      - run:
           name: deploy-backend
-          app-name: ancient-cliffs-65079
-          filters:
-            branches:
-              only:
-                - main
+          command: |
+            git push https://heroku:4dd0c0e5-f7bf-439e-a71f-67e5f368d495@git.heroku.com/ancient-cliffs-65079.git master
           requires:
             - build-test-analyze
  
