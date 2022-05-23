@@ -50,14 +50,18 @@ public class CabinReservationController {
     @PostMapping("/makeReservation")
     @PreAuthorize("hasRole('CLIENT')")
     public ResponseEntity<String> makeReservation (@RequestBody CabinReservationDto cabinReservationDto) {
+
         if(penaltyService.isUserBlockedFromReservation(cabinReservationDto.getClientUsername()))
             return new ResponseEntity<>("Client banned from making reservations!", HttpStatus.BAD_REQUEST);
         if(cabinReservationCancellationService.clientHasCancellationForCabinInPeriod(cabinReservationDto))
             return new ResponseEntity<>("Client has cancellation for cabin in given period!", HttpStatus.BAD_REQUEST);
-        if(reservationCabinService.makeReservation(cabinReservationDto))
+        if(reservationCabinService.makeReservation(cabinReservationDto).equals("TRUE"))
             return new ResponseEntity<>("Success.", HttpStatus.OK);
-        else
+        else if(reservationCabinService.makeReservation(cabinReservationDto).equals("FALSE"))
             return new ResponseEntity<>("Cabin already reserved in period!", HttpStatus.BAD_REQUEST);
+        else
+            return new ResponseEntity<>("Cabin has been edited.Please try again.", HttpStatus.BAD_REQUEST);
+
     }
     @PostMapping("/ownerCreates")
     @PreAuthorize("hasRole('CABINOWNER')")

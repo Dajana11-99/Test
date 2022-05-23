@@ -74,16 +74,21 @@ public class CabinController {
     @PostMapping("/delete")
     public ResponseEntity<String> delete(@RequestBody CabinDto cabinDto){
         Cabin cabin=cabinMapper.cabinDtoToCabin(cabinDto);
-        cabinService.delete(cabin.getId());
-        return new ResponseEntity<>(SUCCESS,HttpStatus.OK);
+        if(cabinService.delete(cabin.getId()))
+         return new ResponseEntity<>(SUCCESS,HttpStatus.OK);
+        else
+         return new ResponseEntity<>("You can't delete this cabin because reservations exists!", HttpStatus.OK);
+
     }
     @PreAuthorize("hasRole('CABINOWNER')")
     @PostMapping("/edit")
     public ResponseEntity<String> edit(@RequestBody CabinDto cabinDto){
         Cabin cabin=cabinMapper.cabinDtoEditToCabin(cabinDto);
         boolean deleteOldImages= cabinDto.getImages() == null;
-        cabinService.edit(cabin,deleteOldImages);
-        return new ResponseEntity<>(SUCCESS,HttpStatus.OK);
+        if(cabinService.edit(cabin,deleteOldImages))
+         return new ResponseEntity<>(SUCCESS,HttpStatus.OK);
+        else
+         return new ResponseEntity<>("You can't edit this cabin because reservations exists !",HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/getAll")

@@ -14,7 +14,12 @@ import com.example.demo.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 import javax.mail.MessagingException;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -49,8 +54,11 @@ public class AdventureReservationServiceImpl implements AdventureReservationServ
     private AdventureReservationMapper adventureReservationMapper = new AdventureReservationMapper();
     private final AdditionalServiceMapper additionalServiceMapper = new AdditionalServiceMapper();
     @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
     public boolean instructorCreates(AdventureReservation adventureReservation, String clientUsername) {
         Client client = clientService.findByUsername(clientUsername);
+        if(adventureReservation == null) return false;
+        if(client == null) return false;
         if(!validateForReservation(adventureReservation,client)) return false;
         AdventureReservation successfullReservation=new AdventureReservation(adventureReservation.getId(),adventureReservation.getStartDate()
         ,adventureReservation.getEndDate(),client,adventureReservation.getPaymentInformation(),adventureReservation.isOwnerWroteAReport(),adventureReservation.getOwnersUsername(),
@@ -58,10 +66,19 @@ public class AdventureReservationServiceImpl implements AdventureReservationServ
         PaymentInformation paymentInformation = reservationPaymentService.setTotalPaymentAmount(successfullReservation,successfullReservation.getFishingInstructor());
         successfullReservation.setPaymentInformation(paymentInformation);
         reservationPaymentService.updateUserRankAfterReservation(client,successfullReservation.getFishingInstructor());
-        adventureReservationRepository.save(successfullReservation);
+        try {
+            adventureReservationRepository.save(successfullReservation);
+        }catch (ObjectOptimisticLockingFailureException e){
+            return false;
+        }
+
         if(adventureReservation.getAddedAdditionalServices()!=null){
             successfullReservation.setAddedAdditionalServices(adventureReservation.getAddedAdditionalServices());
-            adventureReservationRepository.save(successfullReservation);
+            try {
+                adventureReservationRepository.save(successfullReservation);
+            }catch (ObjectOptimisticLockingFailureException e){
+                return false;
+            }
         }
 
         sendMailNotification(successfullReservation,client.getUsername());
@@ -94,8 +111,8 @@ public class AdventureReservationServiceImpl implements AdventureReservationServ
         LocalDateTime currentDate= LocalDateTime.now();
         if(client==null) return false;
 
-        if(adventureReservationRepository.clientHasReservation(adventureReservation.getOwnersUsername()
-                ,client.getId(),currentDate).size()==0) return false;
+       /* if(adventureReservationRepository.clientHasReservation(adventureReservation.getOwnersUsername()
+                ,client.getId(),currentDate).size()==0) return false;*/
 
         if(!availableInstructorPeriodService.instructorIsAvailable(adventureReservation.getFishingInstructor()
                 .getId(),adventureReservation.getStartDate(),adventureReservation.getEndDate())) return false;
@@ -191,6 +208,7 @@ public class AdventureReservationServiceImpl implements AdventureReservationServ
     }
 
     @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
     public boolean makeReservation(AdventureReservationDto adventureReservationDto) {
         if(fishingInstructorNotFree(adventureReservationDto.getOwnersUsername(), adventureReservationDto.getStartDate(), adventureReservationDto.getEndDate()))
             return false;
@@ -198,11 +216,21 @@ public class AdventureReservationServiceImpl implements AdventureReservationServ
         PaymentInformation paymentInformation = reservationPaymentService.setTotalPaymentAmount(adventureReservation, adventureReservation.getFishingInstructor());
         adventureReservation.setPaymentInformation(paymentInformation);
         reservationPaymentService.updateUserRankAfterReservation(adventureReservation.getClient(), adventureReservation.getFishingInstructor());
-        adventureReservationRepository.save(adventureReservation);
+        try {
+            adventureReservationRepository.save(adventureReservation);
+        }catch (ObjectOptimisticLockingFailureException e){
+            return false;
+        }
+
         if(adventureReservationDto.getAddedAdditionalServices()!=null)
         {
             adventureReservation.setAddedAdditionalServices(additionalServiceMapper.additionalServicesDtoToAdditionalServices(adventureReservationDto.getAddedAdditionalServices()));
-            adventureReservationRepository.save(adventureReservation);
+            try {
+                adventureReservationRepository.save(adventureReservation);
+            }catch (ObjectOptimisticLockingFailureException e){
+                return false;
+            }
+
         }
         SendReservationMailToClient(adventureReservationDto);
         return true;

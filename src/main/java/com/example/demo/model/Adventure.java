@@ -20,6 +20,9 @@ public class Adventure {
     @Embedded
     protected  Address address;
 
+    @Version
+    private int version;
+
     @Column(name="description")
     protected String description;
 
@@ -189,6 +192,14 @@ public class Adventure {
     }
 
     public Adventure() {
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
     }
 
     public FishingInstructor getFishingInstructor() {

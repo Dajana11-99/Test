@@ -11,12 +11,14 @@ public class Cabin {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cabin_sequence_generator")
     @Column(name = "id", unique = true)
     protected Long id;
-
+    @Version
+    private int version;
     @Column(name="name", unique = true)
     protected String name;
 
     @Column(name="description")
     protected String description;
+
 
     @Column(name="numOfRooms")
     protected Integer numOfRooms;
@@ -155,6 +157,14 @@ public class Cabin {
         return bedsPerRoom;
     }
 
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
     public void setBedsPerRoom(Integer bedsPerRoom) {
         this.bedsPerRoom = bedsPerRoom;
     }
@@ -198,4 +208,6 @@ public class Cabin {
     public void setCancellingConditions(String cancelingConditions) {
         this.cancellingConditions = cancelingConditions;
     }
+
+
 }

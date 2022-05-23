@@ -17,9 +17,9 @@ public interface AdventureService {
     Set<Adventure> findAdventuresByInstructorId(Long id);
     Adventure findAdventureByName(String adventureName, Long fishingInstructorId);
 
-    void delete(Long id);
+    boolean delete(Long id);
 
-    void edit(Adventure adventure, Long id);
+    boolean edit(Adventure adventure, Long id);
     boolean canBeEditedOrDeleted(Long id);
     List<Adventure> findAll();
     boolean addNewAdventure(Adventure adventure,Set<AdditionalServices>additionalServices);

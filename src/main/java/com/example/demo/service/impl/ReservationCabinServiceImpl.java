@@ -13,7 +13,11 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.MessagingException;
 import java.time.Duration;
@@ -90,21 +94,31 @@ public class ReservationCabinServiceImpl implements ReservationCabinService {
     }
 
     @Override
-    public boolean makeReservation(CabinReservationDto cabinReservationDto) {
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
+    public String makeReservation(CabinReservationDto cabinReservationDto) {
+
         if(cabinNotFreeInPeriod(cabinReservationDto.getCabinDto().getId(), cabinReservationDto.getStartDate(), cabinReservationDto.getEndDate()))
-            return false;
+            return "FALSE";
         CabinReservation cabinReservation = setUpCabinReservationFromDto(cabinReservationDto);
         PaymentInformation paymentInformation = reservationPaymentService.setTotalPaymentAmount(cabinReservation,cabinReservation.getCabin().getCabinOwner());
         cabinReservation.setPaymentInformation(paymentInformation);
         reservationPaymentService.updateUserRankAfterReservation(cabinReservation.getClient(),cabinReservation.getCabin().getCabinOwner());
-        cabinReservationRepository.save(cabinReservation);
+        try {
+            cabinReservationRepository.save(cabinReservation);
+        }catch (ObjectOptimisticLockingFailureException e){
+            return "ObjectOptimisticLockingFailureException";
+        }
         if(cabinReservationDto.getAddedAdditionalServices()!=null)
         {
             cabinReservation.setAddedAdditionalServices(additionalServiceMapper.additionalServicesDtoToAdditionalServices(cabinReservationDto.getAddedAdditionalServices()));
-            cabinReservationRepository.save(cabinReservation);
+            try {
+                cabinReservationRepository.save(cabinReservation);
+            }catch (ObjectOptimisticLockingFailureException e){
+                return "ObjectOptimisticLockingFailureException";
+            }
         }
         SendReservationMailToClient(cabinReservationDto);
-        return true;
+        return "TRUE";
     }
 
     @Override
@@ -121,6 +135,7 @@ public class ReservationCabinServiceImpl implements ReservationCabinService {
     @NotNull
     private CabinReservation setUpCabinReservationFromDto(CabinReservationDto cabinReservationDto) {
         CabinOwner cabinOwner = cabinOwnerService.findByUsername(cabinReservationDto.getCabinDto().getOwnerUsername());
+        if(cabinOwner == null) return  null;
         CabinReservation cabinReservation = cabinReservationMapper.cabinReservationDtoToCabinReservation(cabinReservationDto);
         cabinReservation.getCabin().setCabinOwner(cabinOwner);
         cabinReservation.setClient(clientService.findByUsername(cabinReservationDto.getClientUsername()));
@@ -213,8 +228,11 @@ public class ReservationCabinServiceImpl implements ReservationCabinService {
     }
 
     @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
     public boolean ownerCreates(CabinReservation cabinReservation, String clientUsername) {
         Client client = clientService.findByUsername(clientUsername);
+        if(cabinReservation == null) return false;
+        if(client == null) return  false;
         if(!validateForReservation(cabinReservation,client)) return false;
         CabinReservation successfullReservation=new CabinReservation(cabinReservation.getId(),cabinReservation.getStartDate(),
                     cabinReservation.getEndDate(),client,cabinReservation.getPaymentInformation(),cabinReservation.isOwnerWroteAReport(),
@@ -222,10 +240,19 @@ public class ReservationCabinServiceImpl implements ReservationCabinService {
         PaymentInformation paymentInformation = reservationPaymentService.setTotalPaymentAmount(successfullReservation,successfullReservation.getCabin().getCabinOwner());
         successfullReservation.setPaymentInformation(paymentInformation);
         reservationPaymentService.updateUserRankAfterReservation(client,successfullReservation.getCabin().getCabinOwner());
-        cabinReservationRepository.save(successfullReservation);
+
+        try {
+            cabinReservationRepository.save(successfullReservation);
+        }catch (ObjectOptimisticLockingFailureException e){
+            return false;
+        }
         if(cabinReservation.getAddedAdditionalServices()!=null){
                 successfullReservation.setAddedAdditionalServices(cabinReservation.getAddedAdditionalServices());
+            try {
                 cabinReservationRepository.save(successfullReservation);
+            }catch (ObjectOptimisticLockingFailureException e){
+                return false;
+            }
         }
         sendMailNotification(successfullReservation,client.getUsername());
         return true;

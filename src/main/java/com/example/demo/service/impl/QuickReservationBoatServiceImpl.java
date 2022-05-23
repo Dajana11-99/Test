@@ -11,7 +11,11 @@ import com.example.demo.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.MessagingException;
 import java.time.Duration;
@@ -43,6 +47,7 @@ public class QuickReservationBoatServiceImpl implements QuickReservationBoatServ
     private BoatSubscriptionService boatSubscriptionService;
 
     @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
     public boolean ownerCreates(QuickReservationBoat quickReservationBoat) {
         if(!validateForReservation(quickReservationBoat)) return false;
 
@@ -56,11 +61,23 @@ public class QuickReservationBoatServiceImpl implements QuickReservationBoatServ
                 if (ownerIsNotAvailable(successfullQuickReservation.getBoat().getBoatOwner().getUsername(),
                         successfullQuickReservation.getStartDate(), successfullQuickReservation.getEndDate())) return false;
             }
-            quickReservationBoatRepository.save(successfullQuickReservation);
+            try {
+                quickReservationBoatRepository.save(successfullQuickReservation);
+            }catch (ObjectOptimisticLockingFailureException e){
+                return false;
+            }
             successfullQuickReservation.setAddedAdditionalServices(quickReservationBoat.getAddedAdditionalServices());
-            quickReservationBoatRepository.save(successfullQuickReservation);
+            try {
+                quickReservationBoatRepository.save(successfullQuickReservation);
+            }catch (ObjectOptimisticLockingFailureException e){
+                return false;
+            }
         }else{
-            quickReservationBoatRepository.save(successfullQuickReservation);
+            try {
+                quickReservationBoatRepository.save(successfullQuickReservation);
+            }catch (ObjectOptimisticLockingFailureException e){
+                return false;
+            }
         }
             sendMailNotificationToSubscribedUsers(successfullQuickReservation.getBoat().getId(),successfullQuickReservation.getBoat().getName());
 

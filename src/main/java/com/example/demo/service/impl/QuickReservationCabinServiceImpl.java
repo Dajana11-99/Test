@@ -10,7 +10,11 @@ import com.example.demo.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.MessagingException;
 import java.time.Duration;
@@ -42,6 +46,7 @@ public class QuickReservationCabinServiceImpl implements QuickReservationCabinSe
     private ClientService clientService;
     private final Logger logger= LoggerFactory.getLogger(FirebaseServiceImpl.class);
     @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
     public boolean ownerCreates(QuickReservationCabin quickReservationCabin) {
         if(!validateForReservation(quickReservationCabin)) return false;
 
@@ -49,10 +54,19 @@ public class QuickReservationCabinServiceImpl implements QuickReservationCabinSe
                 quickReservationCabin.getEndDate(),null,quickReservationCabin.getPaymentInformation(), quickReservationCabin.isOwnerWroteAReport(),
                 quickReservationCabin.getOwnersUsername(),quickReservationCabin.getCabin(),quickReservationCabin.getDiscount(),null);
         successfullQuickReservation.setEvaluated(false);
-        quickReservationCabinRepository.save(successfullQuickReservation);
+
+        try {
+            quickReservationCabinRepository.save(successfullQuickReservation);
+        }catch (ObjectOptimisticLockingFailureException e){
+            return false;
+        }
         if(quickReservationCabin.getAddedAdditionalServices()!=null){
             successfullQuickReservation.setAddedAdditionalServices(quickReservationCabin.getAddedAdditionalServices());
-            quickReservationCabinRepository.save(successfullQuickReservation);
+            try {
+                quickReservationCabinRepository.save(successfullQuickReservation);
+            }catch (ObjectOptimisticLockingFailureException e){
+                return false;
+            }
         }
 
         sendMailNotificationToSubscribedUsers(successfullQuickReservation.getCabin().getId(),successfullQuickReservation.getCabin().getName());

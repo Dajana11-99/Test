@@ -86,8 +86,10 @@ public class AdventureController {
     @PreAuthorize("hasRole('FISHING_INSTRUCTOR')  || hasRole('ADMIN')")
     @PostMapping("/deleteAdventure")
     public ResponseEntity<String> deleteAdventure(@RequestBody AdventureDto adventureDto){
-        adventureService.delete(adventureDto.getId());
-        return new ResponseEntity<>(SUCCESS, HttpStatus.OK);
+        if(adventureService.delete(adventureDto.getId())){
+            return new ResponseEntity<>(SUCCESS, HttpStatus.OK);
+        }
+        return new ResponseEntity<>("You can't delete this adventure because reservations exists!", HttpStatus.BAD_REQUEST);
     }
 
     @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")
@@ -95,8 +97,10 @@ public class AdventureController {
     public ResponseEntity<String> editAdventure(@RequestBody AdventureDto adventureDto){
         FishingInstructor fishingInstructor= fishingInstructorService.findByUsername(adventureDto.getFishingInstructorUsername());
         Adventure adventure = adventureMapper.adventureDtoToEditAdventure(adventureDto);
-        adventureService.edit(adventure,fishingInstructor.getId());
-        return new ResponseEntity<>(SUCCESS, HttpStatus.OK);
+        if(adventureService.edit(adventure,fishingInstructor.getId()))
+            return new ResponseEntity<>(SUCCESS, HttpStatus.OK);
+        else
+         return new ResponseEntity<>("You can't edit this adventure because reservations exists !",HttpStatus.BAD_REQUEST);
     }
     @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")
     @GetMapping("/findInstructorsAdventure/{username:.+}/")

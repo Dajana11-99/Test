@@ -5,7 +5,11 @@ import com.example.demo.model.Image;
 import com.example.demo.repository.BoatRepository;
 import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -75,6 +79,7 @@ public class BoatServiceImpl implements BoatService {
     }
 
     @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
     public boolean edit(Boat newBoat, Boolean deleteOldImages) {
         Boat oldBoat=this.boatRepository.findByNameAndOwner(newBoat.getName(),newBoat.getBoatOwner().getId());
         oldBoat.setType(newBoat.getType());
@@ -94,7 +99,11 @@ public class BoatServiceImpl implements BoatService {
         Set<Image> oldImages= oldBoat.getImages();
         oldBoat.setAdditionalServices(newBoat.getAdditionalServices());
         if(Boolean.TRUE.equals(deleteOldImages))  oldBoat.setImages(new HashSet<>());
-        boatRepository.save(oldBoat);
+        try {
+            boatRepository.save(oldBoat);
+        }catch (ObjectOptimisticLockingFailureException e){
+            return false;
+        }
         Set<AdditionalServices> savedServices= boatRepository.findByName(oldBoat.getName()).getAdditionalServices();
         if(Boolean.TRUE.equals(deleteOldImages))   imageService.delete(oldImages);
         additionalServicesService.delete(additionalServicesService.findDeletedAdditionalServices(oldAdditionalServices,savedServices));
@@ -104,11 +113,14 @@ public class BoatServiceImpl implements BoatService {
     @Override
     public boolean delete(Long id) {
         Boat boat=boatRepository.findById(id);
+        if(boat== null) return false;
         Set<AdditionalServices> additionalServices=boat.getAdditionalServices();
         Set<Image> images=boat.getImages();
-        boatRepository.delete(boat);
-        imageService.delete(images);
-        additionalServicesService.delete(additionalServices);
+
+            boatRepository.delete(boat);
+            imageService.delete(images);
+            additionalServicesService.delete(additionalServices);
+
         return true;
     }
 

@@ -13,7 +13,11 @@ import com.example.demo.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.MessagingException;
 import java.time.Duration;
@@ -44,8 +48,11 @@ public class BoatReservationServiceImpl implements BoatReservationService {
     private final BoatReservationMapper boatReservationMapper = new BoatReservationMapper();
     private final AdditionalServiceMapper additionalServiceMapper = new AdditionalServiceMapper();
     @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
     public boolean ownerCreates(BoatReservation boatReservation, String clientUsername) {
         Client client = clientService.findByUsername(clientUsername);
+        if(boatReservation == null) return  false;
+        if(client == null) return  false;
         if(!validateForReservation(boatReservation,client)) return false;
         BoatReservation successfullReservation=new BoatReservation(boatReservation.getId(),boatReservation.getStartDate(),
                 boatReservation.getEndDate(),client,boatReservation.getPaymentInformation(),boatReservation.isOwnerWroteAReport(),
@@ -60,11 +67,24 @@ public class BoatReservationServiceImpl implements BoatReservationService {
                 if (ownerIsNotAvailable(successfullReservation.getBoat().getBoatOwner().getUsername(),
                         successfullReservation.getStartDate(), successfullReservation.getEndDate())) return false;
             }
-            boatReservationRepository.save(successfullReservation);
+            try {
+                boatReservationRepository.save(successfullReservation);
+            }catch (ObjectOptimisticLockingFailureException e){
+                return false;
+            }
             successfullReservation.setAddedAdditionalServices(boatReservation.getAddedAdditionalServices());
-            boatReservationRepository.save(successfullReservation);
+
+            try {
+                boatReservationRepository.save(successfullReservation);
+            }catch (ObjectOptimisticLockingFailureException e){
+                return false;
+            }
         }else{
-            boatReservationRepository.save(successfullReservation);
+            try {
+                boatReservationRepository.save(successfullReservation);
+            }catch (ObjectOptimisticLockingFailureException e){
+                return false;
+            }
         }
         sendMailNotification(successfullReservation,client.getUsername());
         return true;
@@ -210,18 +230,29 @@ public class BoatReservationServiceImpl implements BoatReservationService {
     }
 
     @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
     public boolean makeReservation(BoatReservationDto boatReservationDto) {
+        if(boatReservationDto == null) return  false;
         if(boatNotFreeInPeriod(boatReservationDto.getBoatDto().getId(), boatReservationDto.getStartDate(), boatReservationDto.getEndDate()))
             return false;
         BoatReservation boatReservation = setUpBoatReservationFromDto(boatReservationDto);
         PaymentInformation paymentInformation = reservationPaymentService.setTotalPaymentAmount(boatReservation, boatReservation.getBoat().getBoatOwner());
         boatReservation.setPaymentInformation(paymentInformation);
         reservationPaymentService.updateUserRankAfterReservation(boatReservation.getClient(), boatReservation.getBoat().getBoatOwner());
-        boatReservationRepository.save(boatReservation);
+        try {
+            boatReservationRepository.save(boatReservation);
+        }catch (ObjectOptimisticLockingFailureException e){
+            return false;
+        }
+
         if(boatReservationDto.getAddedAdditionalServices()!=null)
         {
             boatReservation.setAddedAdditionalServices(additionalServiceMapper.additionalServicesDtoToAdditionalServices(boatReservationDto.getAddedAdditionalServices()));
-            boatReservationRepository.save(boatReservation);
+            try {
+                boatReservationRepository.save(boatReservation);
+            }catch (ObjectOptimisticLockingFailureException e){
+                return false;
+            }
         }
         SendReservationMailToClient(boatReservationDto);
         return true;

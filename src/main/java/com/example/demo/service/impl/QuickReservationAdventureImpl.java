@@ -11,7 +11,11 @@ import com.example.demo.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.MessagingException;
 import java.time.Duration;
@@ -43,7 +47,9 @@ public class QuickReservationAdventureImpl implements QuickReservationAdventureS
     private ClientService clientService;
 
     @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
     public boolean instructorCreates(QuickReservationAdventure quickReservationAdventure) {
+        if(quickReservationAdventure == null) return false;
         if(!validateForReservation(quickReservationAdventure)) return false;
 
         QuickReservationAdventure successfullQuickReservation=new QuickReservationAdventure(quickReservationAdventure.getId(),quickReservationAdventure.getStartDate(),
@@ -51,10 +57,19 @@ public class QuickReservationAdventureImpl implements QuickReservationAdventureS
                 quickReservationAdventure.getOwnersUsername(),
                 quickReservationAdventure.getAdventure(),quickReservationAdventure.getFishingInstructor(),quickReservationAdventure.getDiscount(),null);
         successfullQuickReservation.setEvaluated(false);
-        quickReservationAdventureRepository.save(successfullQuickReservation);
+        try {
+            quickReservationAdventureRepository.save(successfullQuickReservation);
+        }catch (ObjectOptimisticLockingFailureException e){
+            return false;
+        }
+
         if(quickReservationAdventure.getAddedAdditionalServices()!=null){
             successfullQuickReservation.setAddedAdditionalServices(quickReservationAdventure.getAddedAdditionalServices());
-            quickReservationAdventureRepository.save(successfullQuickReservation);
+            try {
+                quickReservationAdventureRepository.save(successfullQuickReservation);
+            }catch (ObjectOptimisticLockingFailureException e){
+                return false;
+            }
         }
         sendMailNotificationToSubscribedUsers(successfullQuickReservation.getAdventure().getId(),successfullQuickReservation.getAdventure().getName());
         return true;

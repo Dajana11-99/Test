@@ -5,7 +5,11 @@ import com.example.demo.model.Image;
 import com.example.demo.repository.AdventureRepository;
 import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -79,17 +83,24 @@ public class AdventureServiceImpl implements AdventureService {
     }
 
     @Override
-    public void delete(Long id) {
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
+    public boolean delete(Long id) {
         Adventure adventure=adventureRepository.findByID(id);
         Set<AdditionalServices> additionalServices=adventure.getAdditionalServices();
         Set<Image> images=adventure.getImages();
-        adventureRepository.delete(adventure);
-        additionalServicesService.delete(additionalServices);
-        imageService.delete(images);
+        try {
+            adventureRepository.delete(adventure);
+            additionalServicesService.delete(additionalServices);
+            imageService.delete(images);
+        }catch (ObjectOptimisticLockingFailureException e){
+            return false;
+        }
+        return true;
     }
 
     @Override
-    public void edit(Adventure adventure, Long instructorId) {
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
+    public boolean edit(Adventure adventure, Long instructorId) {
         Adventure oldAdventure= adventureRepository.findAdventureByName(adventure.getName(),instructorId);
         oldAdventure.setDescription(adventure.getDescription());
         oldAdventure.setAddress(adventure.getAddress());
@@ -103,10 +114,16 @@ public class AdventureServiceImpl implements AdventureService {
         Set<Image> oldImages= oldAdventure.getImages();
         oldAdventure.setAdditionalServices(adventure.getAdditionalServices());
         if(adventure.getImages()==null)  oldAdventure.setImages(new HashSet<>());
-        adventureRepository.save(oldAdventure);
+        try {
+            adventureRepository.save(oldAdventure);
+
+        }catch (ObjectOptimisticLockingFailureException e){
+            return false;
+        }
         Set<AdditionalServices> savedServices=adventureRepository.findAdventureByName(adventure.getName(),instructorId).getAdditionalServices();
         if(adventure.getImages()==null)   imageService.delete(oldImages);
         additionalServicesService.delete(additionalServicesService.findDeletedAdditionalServices(oldAdditionalServices,savedServices));
+        return  true;
     }
     @Override
     public boolean canBeEditedOrDeleted(Long id) {

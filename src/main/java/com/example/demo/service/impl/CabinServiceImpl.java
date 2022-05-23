@@ -8,7 +8,11 @@ import com.example.demo.repository.CabinRepository;
 import com.example.demo.repository.CabinReservationRepository;
 import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -68,17 +72,23 @@ public class CabinServiceImpl implements CabinService {
     }
 
     @Override
-    public void delete(Long id) {
+    public boolean delete(Long id) {
         Cabin cabin=cabinRepository.findById(id);
+        if(cabin == null) return  false;
         Set<AdditionalServices> additionalServices=cabin.getAdditionalServices();
         Set<Image> images=cabin.getImages();
-        cabinRepository.delete(cabin);
-        additionalServicesService.delete(additionalServices);
-        imageService.delete(images);
+
+            cabinRepository.delete(cabin);
+            additionalServicesService.delete(additionalServices);
+            imageService.delete(images);
+
+        return true;
+
     }
 
     @Override
-    public Cabin edit(Cabin newCabin, Boolean deleteOldImages) {
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
+    public boolean edit(Cabin newCabin, Boolean deleteOldImages) {
         Cabin oldCabin=this.cabinRepository.findByName(newCabin.getName());
         oldCabin.setAddress(newCabin.getAddress());
         oldCabin.setPrice(newCabin.getPrice());
@@ -91,11 +101,16 @@ public class CabinServiceImpl implements CabinService {
         Set<Image> oldImages= oldCabin.getImages();
         oldCabin.setAdditionalServices(newCabin.getAdditionalServices());
         if(Boolean.TRUE.equals(deleteOldImages))  oldCabin.setImages(new HashSet<>());
-        cabinRepository.save(oldCabin);
+        try {
+            cabinRepository.save(oldCabin);
+        }catch (ObjectOptimisticLockingFailureException e){
+            return false;
+        }
         Set<AdditionalServices> savedServices= cabinRepository.findByName(oldCabin.getName()).getAdditionalServices();
         if(Boolean.TRUE.equals(deleteOldImages))   imageService.delete(oldImages);
         additionalServicesService.delete(additionalServicesService.findDeletedAdditionalServices(oldAdditionalServices,savedServices));
-        return oldCabin;
+
+        return true;
     }
 
     @Override

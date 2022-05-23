@@ -65,7 +65,7 @@ public class BoatController {
         if(boatService.edit(boat,deleteOldImages))
             return new ResponseEntity<>(SUCCESS,HttpStatus.OK);
         else
-            return new ResponseEntity<>(BAD_REQUEST,HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("You can't edit this boat because reservations exists !",HttpStatus.BAD_REQUEST);
     }
     @PreAuthorize("hasRole('BOATOWNER')  || hasRole('ADMIN')")
     @PostMapping("/delete")
@@ -74,7 +74,8 @@ public class BoatController {
         if(boatService.delete(boat.getId()))
             return new ResponseEntity<>(SUCCESS,HttpStatus.OK);
         else
-            return new ResponseEntity<>(BAD_REQUEST,HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("You can't delete this boat because reservations exists!", HttpStatus.BAD_REQUEST);
+
     }
     @PreAuthorize("hasRole('BOATOWNER')")
     @PostMapping("/findByNameAndOwnersUsername/{boatName}/{username:.+}/")

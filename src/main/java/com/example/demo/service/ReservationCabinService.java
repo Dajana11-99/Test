@@ -14,7 +14,7 @@ public interface ReservationCabinService {
 
     Set<Cabin> getAvailableCabins(SearchAvailablePeriodsCabinDto searchAvailablePeriodsCabinDto);
 
-    boolean makeReservation(CabinReservationDto cabinReservationDto);
+    String makeReservation(CabinReservationDto cabinReservationDto);
 
     boolean ownerCreates(CabinReservation cabinReservation, String clientUsername);
 

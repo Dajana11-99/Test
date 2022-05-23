@@ -17,7 +17,8 @@ public class Boat {
 
     @Column(name="name")
     protected String name;
-
+    @Version
+    private int version;
     @Column(name="type")
     protected String type;
 
@@ -276,5 +277,13 @@ public class Boat {
 
     public void setCancelingCondition(String cancelingCondition) {
         this.cancelingCondition = cancelingCondition;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
     }
 }
