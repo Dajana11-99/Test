@@ -10,9 +10,13 @@ import com.example.demo.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.MessagingException;
 
@@ -171,12 +175,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean deleteUser(User user) {
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
+    public String deleteUser(User user) {
         if(checkIfCanDeletingUser(user)){
-            userRepository.delete(user);
-            return  true;
-        }
-          return  false;
+            try {
+                userRepository.delete(user);
+            }catch (ObjectOptimisticLockingFailureException e){
+                return "ObjectOptimisticLockingFailureException";
+            }
+          return "TRUE";
+        };
+          return  "FALSE";
     }
 
 

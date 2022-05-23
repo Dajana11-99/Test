@@ -40,10 +40,12 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deleteUser(@RequestBody UserRequestDTO userRequest) {
         User user= userService.findByUsername(userRequest.getUsername());
-        if(userService.deleteUser(user)){
-            return new ResponseEntity<>("Success.", HttpStatus.OK);
+        if(userService.deleteUser(user).equals("FALSE")){
+         return new ResponseEntity<>("User has future reservations.", HttpStatus.BAD_REQUEST);
+        }else if(userService.deleteUser(user).equals("ObjectOptimisticLockingFailureException")) {
+         return new ResponseEntity<>("User is already deleted!", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>("User has future reservations.", HttpStatus.BAD_REQUEST);
+         return new ResponseEntity<>("Success.", HttpStatus.OK);
     }
     @GetMapping(value = "getUsername")
     @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")

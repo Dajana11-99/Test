@@ -23,7 +23,8 @@ public abstract class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "account_sequence_generator")
     @Column(name = "id", unique = true)
     protected Long id;
-
+    @Version
+    private int version;
     @Column(name="name")
     protected String name;
     @Column(name="lastName")
@@ -183,6 +184,14 @@ public abstract class User implements UserDetails {
     @Override
     public String getPassword() {
         return password;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
     }
 
     @JsonIgnore
