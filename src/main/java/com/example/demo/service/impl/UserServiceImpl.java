@@ -203,18 +203,35 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void sendDenyReason(String response, String recipient) throws MessagingException {
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
+    public boolean sendDenyReason(String response, String recipient) throws MessagingException {
         mailService.sendMail(recipient,response,new AccountDeletingDenied());
         User user=userRepository.findByUsername(recipient);
+        if(user== null)
+            return false;
         user.setReasonForDeleting("");
-        userRepository.save(user);
+        try {
+            userRepository.save(user);
+        }catch (ObjectOptimisticLockingFailureException e){
+            return false;
+        }
+        return  true;
     }
 
     @Override
-    public void sendAcceptReason(String response, String recipient) throws MessagingException {
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
+    public boolean sendAcceptReason(String response, String recipient) throws MessagingException {
         mailService.sendMail(recipient,response,new AccountDeletingAccepted());
         User user=userRepository.findByUsername(recipient);
-        userRepository.delete(user);
+        if(user== null)
+            return false;
+        try {
+            userRepository.delete(user);
+        }catch (ObjectOptimisticLockingFailureException e){
+            return false;
+        }
+        return  true;
+
     }
 
     @Override

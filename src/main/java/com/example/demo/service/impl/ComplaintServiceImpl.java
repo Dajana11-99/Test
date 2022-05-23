@@ -11,7 +11,11 @@ import com.example.demo.service.ComplaintService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.MessagingException;
 import java.time.LocalDateTime;
@@ -66,10 +70,15 @@ public class ComplaintServiceImpl implements ComplaintService {
     }
 
     @Override
-    public void sendMailAboutComplaint(Complaint complaint, String response)
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
+    public boolean sendMailAboutComplaint(Complaint complaint, String response)
     {
         complaint.setResponded(true);
-        complaintRepository.save(complaint);
+        try {
+            complaintRepository.save(complaint);
+        }catch (ObjectOptimisticLockingFailureException e){
+            return false;
+        }
         if(complaint.getComplaintType().equals("CABIN_COMPLAINT")){
             String name= cabinComplaintRepository.getById(complaint.getId()).getCabin().getName();
             sendMailNotificationForCabinAndBoat(complaint,name,"cabin",response);
@@ -82,7 +91,7 @@ public class ComplaintServiceImpl implements ComplaintService {
             sendMailNotificationForOwners(complaint,response);
             sendMailNotificationForClient(complaint,complaint.getOwnersUsername(),response);
         }
-
+        return  true;
     }
 
     @Override

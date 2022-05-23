@@ -31,9 +31,9 @@ public interface UserService {
 
     List<User> getAllRequestsForDeletingAccount();
 
-    void sendDenyReason(String response, String recipient) throws MessagingException;
+    boolean sendDenyReason(String response, String recipient) throws MessagingException;
 
-    void sendAcceptReason(String response, String recipient) throws MessagingException;
+    boolean sendAcceptReason(String response, String recipient) throws MessagingException;
 
     String getUsernameFromToken(String s);
 
