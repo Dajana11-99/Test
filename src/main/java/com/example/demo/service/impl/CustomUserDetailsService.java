@@ -30,7 +30,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 
     private PasswordEncoder passwordEncoder;
-
+    @Autowired
     private AuthenticationManager authenticationManager;
 
     // Funkcija koja na osnovu username-a iz baze vraca objekat User-a
