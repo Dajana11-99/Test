@@ -47,7 +47,7 @@ public class QuickReservationAdventureImpl implements QuickReservationAdventureS
     private ClientService clientService;
 
     @Override
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
     public boolean instructorCreates(QuickReservationAdventure quickReservationAdventure) {
         if(quickReservationAdventure == null) return false;
         if(!validateForReservation(quickReservationAdventure)) return false;

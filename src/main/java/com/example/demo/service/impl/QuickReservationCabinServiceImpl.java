@@ -46,7 +46,7 @@ public class QuickReservationCabinServiceImpl implements QuickReservationCabinSe
     private ClientService clientService;
     private final Logger logger= LoggerFactory.getLogger(FirebaseServiceImpl.class);
     @Override
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
     public boolean ownerCreates(QuickReservationCabin quickReservationCabin) {
         if(!validateForReservation(quickReservationCabin)) return false;
 

@@ -48,7 +48,7 @@ public class BoatReservationServiceImpl implements BoatReservationService {
     private final BoatReservationMapper boatReservationMapper = new BoatReservationMapper();
     private final AdditionalServiceMapper additionalServiceMapper = new AdditionalServiceMapper();
     @Override
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
     public boolean ownerCreates(BoatReservation boatReservation, String clientUsername) {
         Client client = clientService.findByUsername(clientUsername);
         if(boatReservation == null) return  false;

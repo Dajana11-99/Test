@@ -47,7 +47,7 @@ public class QuickReservationBoatServiceImpl implements QuickReservationBoatServ
     private BoatSubscriptionService boatSubscriptionService;
 
     @Override
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
     public boolean ownerCreates(QuickReservationBoat quickReservationBoat) {
         if(!validateForReservation(quickReservationBoat)) return false;
 

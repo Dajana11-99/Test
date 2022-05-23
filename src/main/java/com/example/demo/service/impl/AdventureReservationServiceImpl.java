@@ -54,7 +54,7 @@ public class AdventureReservationServiceImpl implements AdventureReservationServ
     private AdventureReservationMapper adventureReservationMapper = new AdventureReservationMapper();
     private final AdditionalServiceMapper additionalServiceMapper = new AdditionalServiceMapper();
     @Override
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
     public boolean instructorCreates(AdventureReservation adventureReservation, String clientUsername) {
         Client client = clientService.findByUsername(clientUsername);
         if(adventureReservation == null) return false;
