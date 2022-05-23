@@ -230,7 +230,7 @@ public class BoatReservationServiceImpl implements BoatReservationService {
     }
 
     @Override
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
     public boolean makeReservation(BoatReservationDto boatReservationDto) {
         if(boatReservationDto == null) return  false;
         if(boatNotFreeInPeriod(boatReservationDto.getBoatDto().getId(), boatReservationDto.getStartDate(), boatReservationDto.getEndDate()))
