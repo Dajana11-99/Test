@@ -177,6 +177,8 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
     public String deleteUser(User user) {
+        if(user== null)
+            return "ObjectOptimisticLockingFailureException";
         if(checkIfCanDeletingUser(user)){
             try {
                 userRepository.delete(user);
@@ -184,8 +186,9 @@ public class UserServiceImpl implements UserService {
                 return "ObjectOptimisticLockingFailureException";
             }
           return "TRUE";
-        };
-          return  "FALSE";
+        }else {
+            return "FALSE";
+        }
     }
 
 
