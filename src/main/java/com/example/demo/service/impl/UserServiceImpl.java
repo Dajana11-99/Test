@@ -207,7 +207,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
-    public boolean sendDenyReason(String response, String recipient) throws ObjectOptimisticLockingFailureException, MessagingException {
+    public boolean sendDenyReason(String response, String recipient) throws Exception {
         User user=userRepository.findByUsername(recipient);
         if(user.getReasonForDeleting() == null)return false;
         if(user== null)
