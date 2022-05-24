@@ -25,7 +25,7 @@ public interface UserService {
 
     void editUser(UserRequestDTO userRequest);
 
-    boolean deleteUser(User user) throws Exception;
+    String deleteUser(User user) throws Exception;
 
     void saveDeleteAccountRequest(String username, String reasonForDeleting);
 

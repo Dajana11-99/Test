@@ -177,16 +177,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
-    public boolean deleteUser(User user)  {
-       try {
-           if(checkIfCanDeletingUser(user)) {
-               userRepository.delete(user);
-               return true;
-           }
-           return false;
-       }catch (Exception e){
-           return false;
-       }
+    public String deleteUser(User user)   {
+        try {
+
+            if (checkIfCanDeletingUser(user)) {
+                userRepository.delete(user);
+                return "TRUE";
+            }
+            return "FALSE";
+        }catch (Exception e){
+         return "Exception"  ;
+        }
 
 
     }

@@ -41,12 +41,15 @@ public class UserController {
     public ResponseEntity<String> deleteUser(@RequestBody UserRequestDTO userRequest) {
         User user= userService.findByUsername(userRequest.getUsername());
       try {
-          if(!userService.deleteUser(user)){
+          if(userService.deleteUser(user).equals("FALSE")){
               return new ResponseEntity<>("User has future reservations.", HttpStatus.BAD_REQUEST);
-          }
-          return new ResponseEntity<>("Success.", HttpStatus.OK);
+          }else if(userService.deleteUser(user).equals("TRUE"))
+            return new ResponseEntity<>("Success.", HttpStatus.OK);
+          else
+              return new ResponseEntity<>("User has already been deleted!", HttpStatus.BAD_REQUEST);
+
       }catch (Exception e){
-          return new ResponseEntity<>("User is already deleted!", HttpStatus.BAD_REQUEST);
+          return new ResponseEntity<>("User has already been deleted!", HttpStatus.BAD_REQUEST);
       }
 
     }
