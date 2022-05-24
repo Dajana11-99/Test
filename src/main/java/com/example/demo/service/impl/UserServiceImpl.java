@@ -176,19 +176,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
-    public String deleteUser(User user) {
+    public boolean deleteUser(User user) throws Exception {
         if(user== null)
-            return "ObjectOptimisticLockingFailureException";
-        if(checkIfCanDeletingUser(user)){
-            try {
-                userRepository.delete(user);
-            }catch (ObjectOptimisticLockingFailureException e){
-                return "ObjectOptimisticLockingFailureException";
-            }
-          return "TRUE";
-        }else {
-            return "FALSE";
+            return false;
+        if(checkIfCanDeletingUser(user)) {
+            userRepository.delete(user);
+            return true;
         }
+        return false;
+
     }
 
 
@@ -207,34 +203,25 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
-    public boolean sendDenyReason(String response, String recipient) throws MessagingException {
+    public boolean sendDenyReason(String response, String recipient) throws Exception {
         mailService.sendMail(recipient,response,new AccountDeletingDenied());
         User user=userRepository.findByUsername(recipient);
         if(user== null)
             return false;
         user.setReasonForDeleting("");
-        try {
-            userRepository.save(user);
-        }catch (ObjectOptimisticLockingFailureException e){
-            return false;
-        }
+        userRepository.save(user);
         return  true;
     }
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
-    public boolean sendAcceptReason(String response, String recipient) throws MessagingException {
+    public boolean sendAcceptReason(String response, String recipient) throws Exception {
         mailService.sendMail(recipient,response,new AccountDeletingAccepted());
         User user=userRepository.findByUsername(recipient);
         if(user== null)
             return false;
-        try {
-            userRepository.delete(user);
-        }catch (ObjectOptimisticLockingFailureException e){
-            return false;
-        }
+        userRepository.delete(user);
         return  true;
-
     }
 
     @Override

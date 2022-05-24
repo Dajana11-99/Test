@@ -12,7 +12,7 @@ public interface ComplaintService {
 
     List<Complaint> getAll();
 
-    boolean sendMailAboutComplaint(Complaint complaint,String response);
+    boolean sendMailAboutComplaint(Complaint complaint,String response) throws Exception;
 
     Complaint getOne(Long id);
 }

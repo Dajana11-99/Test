@@ -50,11 +50,16 @@ public class ComplaintController {
     @PostMapping("/sendMailAboutComplaint/{id}")
     public ResponseEntity<String> sendMailAboutComplaint(@PathVariable ("id") Long id,@RequestBody String response){
         Complaint complaint = complaintService.getOne(id);
-        System.out.println("res"+response);
-        if(complaintService.sendMailAboutComplaint(complaint,response)){
-            return new ResponseEntity<>("Success", HttpStatus.OK);
-        }else {
+        try {
+            if(complaintService.sendMailAboutComplaint(complaint,response)){
+                return new ResponseEntity<>("Success", HttpStatus.OK);
+            }else {
+                return new ResponseEntity<>("Complaint has already been reviewed!", HttpStatus.BAD_REQUEST);
+            }
+
+        }catch (Exception e){
             return new ResponseEntity<>("Complaint has already been reviewed!", HttpStatus.BAD_REQUEST);
+
         }
 
 

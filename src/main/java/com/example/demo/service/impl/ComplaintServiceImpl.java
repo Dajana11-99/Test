@@ -71,14 +71,11 @@ public class ComplaintServiceImpl implements ComplaintService {
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
-    public boolean sendMailAboutComplaint(Complaint complaint, String response)
+    public boolean sendMailAboutComplaint(Complaint complaint, String response) throws Exception
     {
         complaint.setResponded(true);
-        try {
-            complaintRepository.save(complaint);
-        }catch (ObjectOptimisticLockingFailureException e){
-            return false;
-        }
+        complaintRepository.save(complaint);
+
         if(complaint.getComplaintType().equals("CABIN_COMPLAINT")){
             String name= cabinComplaintRepository.getById(complaint.getId()).getCabin().getName();
             sendMailNotificationForCabinAndBoat(complaint,name,"cabin",response);
