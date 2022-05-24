@@ -40,7 +40,7 @@ public class QuickReservationCabinController {
                 return new ResponseEntity<>("Unsuccessfull reservation.", HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
-            return new ResponseEntity<>("PROOOOOBLEM.", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Someone already made reservation.", HttpStatus.BAD_REQUEST);
         }
     }
     @GetMapping(value= "/getByCabinId/{cabinId}")
