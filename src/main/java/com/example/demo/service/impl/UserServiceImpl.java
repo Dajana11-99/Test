@@ -207,7 +207,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
-    public boolean sendDenyReason(String response, String recipient) throws MessagingException {
+    public boolean sendDenyReason(String response, String recipient) throws Exception {
         mailService.sendMail(recipient,response,new AccountDeletingDenied());
         User user=userRepository.findByUsername(recipient);
         if(user== null)

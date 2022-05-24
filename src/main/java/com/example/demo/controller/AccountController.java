@@ -66,7 +66,7 @@ public class AccountController {
                 return new ResponseEntity<>("Reason is already sent!", HttpStatus.BAD_REQUEST);
             }
             return new ResponseEntity<>(SUCCESS, HttpStatus.OK);
-        }catch (ObjectOptimisticLockingFailureException e){
+        }catch (Exception e){
             return new ResponseEntity<>("Reason is already sent!", HttpStatus.BAD_REQUEST);
 
         }
