@@ -222,8 +222,10 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
     public boolean sendAcceptReason(String response, String recipient) throws Exception {
-        mailService.sendMail(recipient,response,new AccountDeletingAccepted());
         User user=userRepository.findByUsername(recipient);
+        if(user.getReasonForDeleting().equals(""))return false;
+        mailService.sendMail(recipient,response,new AccountDeletingAccepted());
+
         if(user== null)
             return false;
         userRepository.delete(user);
