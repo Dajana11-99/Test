@@ -71,24 +71,29 @@ public class ComplaintServiceImpl implements ComplaintService {
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
-    public boolean sendMailAboutComplaint(Complaint complaint, String response) throws Exception
+    public boolean sendMailAboutComplaint(Complaint complaint, String response)
     {
-        complaint.setResponded(true);
-        complaintRepository.save(complaint);
+        try {
+            complaint.setResponded(true);
+            complaintRepository.save(complaint);
 
-        if(complaint.getComplaintType().equals("CABIN_COMPLAINT")){
-            String name= cabinComplaintRepository.getById(complaint.getId()).getCabin().getName();
-            sendMailNotificationForCabinAndBoat(complaint,name,"cabin",response);
-            sendMailNotificationForClient(complaint,name,response);
-        }else if(complaint.getComplaintType().equals("BOAT_COMPLAINT")){
-            Boat boat= boatComplaintRepository.getById(complaint.getId()).getBoat();
-            sendMailNotificationForCabinAndBoat(complaint,boat.getName(),"boat",response);
-            sendMailNotificationForClient(complaint,boat.getName(),response);
-        }else {
-            sendMailNotificationForOwners(complaint,response);
-            sendMailNotificationForClient(complaint,complaint.getOwnersUsername(),response);
+            if(complaint.getComplaintType().equals("CABIN_COMPLAINT")){
+                String name= cabinComplaintRepository.getById(complaint.getId()).getCabin().getName();
+                sendMailNotificationForCabinAndBoat(complaint,name,"cabin",response);
+                sendMailNotificationForClient(complaint,name,response);
+            }else if(complaint.getComplaintType().equals("BOAT_COMPLAINT")){
+                Boat boat= boatComplaintRepository.getById(complaint.getId()).getBoat();
+                sendMailNotificationForCabinAndBoat(complaint,boat.getName(),"boat",response);
+                sendMailNotificationForClient(complaint,boat.getName(),response);
+            }else {
+                sendMailNotificationForOwners(complaint,response);
+                sendMailNotificationForClient(complaint,complaint.getOwnersUsername(),response);
+            }
+            return  true;
+        }catch (Exception e){
+            return  false;
         }
-        return  true;
+
     }
 
     @Override

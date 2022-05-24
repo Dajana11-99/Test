@@ -175,15 +175,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
-    public boolean deleteUser(User user) throws Exception {
-        if(user== null)
-            return false;
-        if(checkIfCanDeletingUser(user)) {
-            userRepository.delete(user);
-            return true;
-        }
-        return false;
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
+    public boolean deleteUser(User user)  {
+       try {
+           if(checkIfCanDeletingUser(user)) {
+               userRepository.delete(user);
+               return true;
+           }
+           return false;
+       }catch (Exception e){
+           return false;
+       }
+
 
     }
 
@@ -202,7 +205,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
     public boolean sendDenyReason(String response, String recipient) throws Exception {
         mailService.sendMail(recipient,response,new AccountDeletingDenied());
         User user=userRepository.findByUsername(recipient);
@@ -214,7 +217,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
     public boolean sendAcceptReason(String response, String recipient) throws Exception {
         mailService.sendMail(recipient,response,new AccountDeletingAccepted());
         User user=userRepository.findByUsername(recipient);
