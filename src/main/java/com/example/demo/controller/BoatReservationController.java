@@ -49,7 +49,7 @@ public class BoatReservationController {
                return new ResponseEntity<>("Unsuccessfull reservation.", HttpStatus.BAD_REQUEST);
            }
        }catch (Exception e){
-           return new ResponseEntity<>("Someone already made or owner edited boat. Please try again.", HttpStatus.BAD_REQUEST);
+           return new ResponseEntity<>("Someone already made reservation  or owner edited boat. Please try again.", HttpStatus.BAD_REQUEST);
 
        }
     }
@@ -119,7 +119,7 @@ public class BoatReservationController {
             else
                 return new ResponseEntity<>("Boat already reserved in period!", HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            return new ResponseEntity<>("Someone already made or boat edited cabin. Please try again.!", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Someone already made reservation or owner edited boat. Please try again.!", HttpStatus.BAD_REQUEST);
         }
     }
 

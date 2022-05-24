@@ -63,7 +63,7 @@ public class CabinReservationController {
             else
                 return new ResponseEntity<>("Cabin has been edited.Please try again.", HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            return new ResponseEntity<>("Someone already made or owner edited cabin. Please try again..", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Someone already made reservation or owner edited cabin. Please try again..", HttpStatus.BAD_REQUEST);
 
         }
 
@@ -82,7 +82,7 @@ public class CabinReservationController {
                 return new ResponseEntity<>("Unsuccessful reservation.", HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
-            return new ResponseEntity<>("Someone already made or owner edited cabin. Please try again..", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Someone already made reservation or owner edited cabin. Please try again..", HttpStatus.BAD_REQUEST);
         }
     }
 
