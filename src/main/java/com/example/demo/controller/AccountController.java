@@ -60,7 +60,7 @@ public class AccountController {
 
     @PostMapping("/sendDenyReasonForDeletingAccount")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> sendDenyReasonForDeletingAccount(@RequestBody MailDto mailDto) {
+    public ResponseEntity<String> sendDenyReasonForDeletingAccount(@RequestBody MailDto mailDto)  {
         try {
             if(!userService.sendDenyReason(mailDto.getResponse(),mailDto.getRecipient())){
                 return new ResponseEntity<>("Reason is already sent!", HttpStatus.BAD_REQUEST);
@@ -68,6 +68,9 @@ public class AccountController {
             return new ResponseEntity<>(SUCCESS, HttpStatus.OK);
         }catch (ObjectOptimisticLockingFailureException e){
             return new ResponseEntity<>("Reason is already sent!", HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Reason is already sent!", HttpStatus.BAD_REQUEST);
+
         }
     }
 
