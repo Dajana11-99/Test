@@ -7,6 +7,7 @@ import com.example.demo.model.*;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.security.TokenUtils;
 import com.example.demo.service.*;
+import org.hibernate.dialect.lock.OptimisticEntityLockException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -212,7 +213,11 @@ public class UserServiceImpl implements UserService {
         if(user== null)
             return false;
         user.setReasonForDeleting("");
-        userRepository.save(user);
+        try {
+            userRepository.save(user);
+        }catch (ObjectOptimisticLockingFailureException e){
+            return false;
+        }
         return  true;
     }
 

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import javax.mail.MessagingException;
@@ -65,7 +66,7 @@ public class AccountController {
                 return new ResponseEntity<>("Reason is already sent!", HttpStatus.BAD_REQUEST);
             }
             return new ResponseEntity<>(SUCCESS, HttpStatus.OK);
-        }catch (Exception e){
+        }catch (ObjectOptimisticLockingFailureException e){
             return new ResponseEntity<>("Reason is already sent!", HttpStatus.BAD_REQUEST);
 
         }
