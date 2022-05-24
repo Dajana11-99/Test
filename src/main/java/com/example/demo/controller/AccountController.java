@@ -60,8 +60,8 @@ public class AccountController {
     @PostMapping("/sendDenyReasonForDeletingAccount")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> sendDenyReasonForDeletingAccount(@RequestBody MailDto mailDto) throws MessagingException {
-        if(userService.sendDenyReason(mailDto.getResponse(),mailDto.getRecipient())){
-            return new ResponseEntity<>("Reason is already send!", HttpStatus.BAD_REQUEST);
+        if(!userService.sendDenyReason(mailDto.getResponse(),mailDto.getRecipient())){
+            return new ResponseEntity<>("Reason is already sent!", HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(SUCCESS, HttpStatus.OK);
     }
@@ -70,7 +70,7 @@ public class AccountController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> sendAcceptReasonForDeletingAccount(@RequestBody MailDto mailDto) throws MessagingException {
        System.out.println("AAA"+mailDto.getRecipient()+"*"+mailDto.getResponse());
-        if(userService.sendAcceptReason(mailDto.getResponse(),mailDto.getRecipient())){
+        if(!userService.sendAcceptReason(mailDto.getResponse(),mailDto.getRecipient())){
             return new ResponseEntity<>("User is already deleted!", HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(SUCCESS, HttpStatus.OK);
