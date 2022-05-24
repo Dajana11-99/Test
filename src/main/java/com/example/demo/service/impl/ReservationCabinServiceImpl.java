@@ -228,7 +228,7 @@ public class ReservationCabinServiceImpl implements ReservationCabinService {
     }
 
     @Override
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
     public boolean ownerCreates(CabinReservation cabinReservation, String clientUsername) {
         Client client = clientService.findByUsername(clientUsername);
         if(cabinReservation == null) return false;
