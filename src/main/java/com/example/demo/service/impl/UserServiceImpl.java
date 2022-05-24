@@ -207,14 +207,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
-    public boolean sendDenyReason(String response, String recipient) throws OptimisticEntityLockException, MessagingException {
+    public boolean sendDenyReason(String response, String recipient) throws Exception, MessagingException {
         mailService.sendMail(recipient,response,new AccountDeletingDenied());
         User user=userRepository.findByUsername(recipient);
         if(user== null)
             return false;
+        if(user.getReasonForDeleting() == null)return false;
         user.setReasonForDeleting("");
-
-            userRepository.save(user);
+        userRepository.save(user);
 
         return  true;
     }
