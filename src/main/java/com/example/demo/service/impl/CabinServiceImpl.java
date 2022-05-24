@@ -88,7 +88,7 @@ public class CabinServiceImpl implements CabinService {
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
-    public boolean edit(Cabin newCabin, Boolean deleteOldImages) {
+    public boolean edit(Cabin newCabin, Boolean deleteOldImages) throws Exception {
         Cabin oldCabin=this.cabinRepository.findByName(newCabin.getName());
         oldCabin.setAddress(newCabin.getAddress());
         oldCabin.setPrice(newCabin.getPrice());
@@ -101,11 +101,8 @@ public class CabinServiceImpl implements CabinService {
         Set<Image> oldImages= oldCabin.getImages();
         oldCabin.setAdditionalServices(newCabin.getAdditionalServices());
         if(Boolean.TRUE.equals(deleteOldImages))  oldCabin.setImages(new HashSet<>());
-        try {
             cabinRepository.save(oldCabin);
-        }catch (ObjectOptimisticLockingFailureException e){
-            return false;
-        }
+
         Set<AdditionalServices> savedServices= cabinRepository.findByName(oldCabin.getName()).getAdditionalServices();
         if(Boolean.TRUE.equals(deleteOldImages))   imageService.delete(oldImages);
         additionalServicesService.delete(additionalServicesService.findDeletedAdditionalServices(oldAdditionalServices,savedServices));

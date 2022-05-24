@@ -49,7 +49,7 @@ public class BoatReservationServiceImpl implements BoatReservationService {
     private final AdditionalServiceMapper additionalServiceMapper = new AdditionalServiceMapper();
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
-    public boolean ownerCreates(BoatReservation boatReservation, String clientUsername) {
+    public boolean ownerCreates(BoatReservation boatReservation, String clientUsername) throws Exception{
         Client client = clientService.findByUsername(clientUsername);
         if(boatReservation == null) return  false;
         if(client == null) return  false;
@@ -67,24 +67,17 @@ public class BoatReservationServiceImpl implements BoatReservationService {
                 if (ownerIsNotAvailable(successfullReservation.getBoat().getBoatOwner().getUsername(),
                         successfullReservation.getStartDate(), successfullReservation.getEndDate())) return false;
             }
-            try {
+
                 boatReservationRepository.save(successfullReservation);
-            }catch (ObjectOptimisticLockingFailureException e){
-                return false;
-            }
+
             successfullReservation.setAddedAdditionalServices(boatReservation.getAddedAdditionalServices());
 
-            try {
                 boatReservationRepository.save(successfullReservation);
-            }catch (ObjectOptimisticLockingFailureException e){
-                return false;
-            }
+
         }else{
-            try {
+
                 boatReservationRepository.save(successfullReservation);
-            }catch (ObjectOptimisticLockingFailureException e){
-                return false;
-            }
+
         }
         sendMailNotification(successfullReservation,client.getUsername());
         return true;
@@ -231,7 +224,7 @@ public class BoatReservationServiceImpl implements BoatReservationService {
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
-    public boolean makeReservation(BoatReservationDto boatReservationDto) {
+    public boolean makeReservation(BoatReservationDto boatReservationDto) throws Exception {
         if(boatReservationDto == null) return  false;
         if(boatNotFreeInPeriod(boatReservationDto.getBoatDto().getId(), boatReservationDto.getStartDate(), boatReservationDto.getEndDate()))
             return false;
@@ -239,20 +232,15 @@ public class BoatReservationServiceImpl implements BoatReservationService {
         PaymentInformation paymentInformation = reservationPaymentService.setTotalPaymentAmount(boatReservation, boatReservation.getBoat().getBoatOwner());
         boatReservation.setPaymentInformation(paymentInformation);
         reservationPaymentService.updateUserRankAfterReservation(boatReservation.getClient(), boatReservation.getBoat().getBoatOwner());
-        try {
             boatReservationRepository.save(boatReservation);
-        }catch (ObjectOptimisticLockingFailureException e){
-            return false;
-        }
+
 
         if(boatReservationDto.getAddedAdditionalServices()!=null)
         {
             boatReservation.setAddedAdditionalServices(additionalServiceMapper.additionalServicesDtoToAdditionalServices(boatReservationDto.getAddedAdditionalServices()));
-            try {
+
                 boatReservationRepository.save(boatReservation);
-            }catch (ObjectOptimisticLockingFailureException e){
-                return false;
-            }
+
         }
         SendReservationMailToClient(boatReservationDto);
         return true;

@@ -19,7 +19,7 @@ public interface AdventureService {
 
     boolean delete(Long id);
 
-    boolean edit(Adventure adventure, Long id);
+    boolean edit(Adventure adventure, Long id) throws Exception;
     boolean canBeEditedOrDeleted(Long id);
     List<Adventure> findAll();
     boolean addNewAdventure(Adventure adventure,Set<AdditionalServices>additionalServices);

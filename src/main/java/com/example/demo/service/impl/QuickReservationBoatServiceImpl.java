@@ -48,7 +48,7 @@ public class QuickReservationBoatServiceImpl implements QuickReservationBoatServ
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
-    public boolean ownerCreates(QuickReservationBoat quickReservationBoat) {
+    public boolean ownerCreates(QuickReservationBoat quickReservationBoat) throws Exception {
         if(!validateForReservation(quickReservationBoat)) return false;
 
         QuickReservationBoat successfullQuickReservation=new QuickReservationBoat(quickReservationBoat.getId(), quickReservationBoat.getStartDate(),
@@ -61,23 +61,15 @@ public class QuickReservationBoatServiceImpl implements QuickReservationBoatServ
                 if (ownerIsNotAvailable(successfullQuickReservation.getBoat().getBoatOwner().getUsername(),
                         successfullQuickReservation.getStartDate(), successfullQuickReservation.getEndDate())) return false;
             }
-            try {
+
                 quickReservationBoatRepository.save(successfullQuickReservation);
-            }catch (ObjectOptimisticLockingFailureException e){
-                return false;
-            }
+
             successfullQuickReservation.setAddedAdditionalServices(quickReservationBoat.getAddedAdditionalServices());
-            try {
+
                 quickReservationBoatRepository.save(successfullQuickReservation);
-            }catch (ObjectOptimisticLockingFailureException e){
-                return false;
-            }
+
         }else{
-            try {
                 quickReservationBoatRepository.save(successfullQuickReservation);
-            }catch (ObjectOptimisticLockingFailureException e){
-                return false;
-            }
         }
             sendMailNotificationToSubscribedUsers(successfullQuickReservation.getBoat().getId(),successfullQuickReservation.getBoat().getName());
 

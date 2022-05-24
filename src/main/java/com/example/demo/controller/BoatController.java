@@ -57,15 +57,20 @@ public class BoatController {
     }
     @PreAuthorize("hasRole('BOATOWNER')")
     @PostMapping("/edit")
-    public ResponseEntity<String> edit(@RequestBody BoatDto boatDto){
+    public ResponseEntity<String> edit(@RequestBody BoatDto boatDto) throws Exception {
         BoatOwner owner=boatOwnerService.findByUsername(boatDto.getOwnersUsername());
         Boat boat=boatMapper.boatDtoToBoatEdit(boatDto);
         boat.setBoatOwner(owner);
         boolean deleteOldImages= boatDto.getImages() == null;
-        if(boatService.edit(boat,deleteOldImages))
-            return new ResponseEntity<>(SUCCESS,HttpStatus.OK);
-        else
+        try {
+            if(boatService.edit(boat,deleteOldImages))
+                return new ResponseEntity<>(SUCCESS,HttpStatus.OK);
+            else
+                return new ResponseEntity<>("You can't edit this boat because reservations exists !",HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
             return new ResponseEntity<>("You can't edit this boat because reservations exists !",HttpStatus.BAD_REQUEST);
+
+        }
     }
     @PreAuthorize("hasRole('BOATOWNER')  || hasRole('ADMIN')")
     @PostMapping("/delete")

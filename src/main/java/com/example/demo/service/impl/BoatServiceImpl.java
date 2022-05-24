@@ -80,7 +80,7 @@ public class BoatServiceImpl implements BoatService {
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
-    public boolean edit(Boat newBoat, Boolean deleteOldImages) {
+    public boolean edit(Boat newBoat, Boolean deleteOldImages) throws Exception {
         Boat oldBoat=this.boatRepository.findByNameAndOwner(newBoat.getName(),newBoat.getBoatOwner().getId());
         oldBoat.setType(newBoat.getType());
         oldBoat.setLength(newBoat.getLength());
@@ -99,11 +99,9 @@ public class BoatServiceImpl implements BoatService {
         Set<Image> oldImages= oldBoat.getImages();
         oldBoat.setAdditionalServices(newBoat.getAdditionalServices());
         if(Boolean.TRUE.equals(deleteOldImages))  oldBoat.setImages(new HashSet<>());
-        try {
+
             boatRepository.save(oldBoat);
-        }catch (ObjectOptimisticLockingFailureException e){
-            return false;
-        }
+
         Set<AdditionalServices> savedServices= boatRepository.findByName(oldBoat.getName()).getAdditionalServices();
         if(Boolean.TRUE.equals(deleteOldImages))   imageService.delete(oldImages);
         additionalServicesService.delete(additionalServicesService.findDeletedAdditionalServices(oldAdditionalServices,savedServices));

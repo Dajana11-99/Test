@@ -100,7 +100,7 @@ public class AdventureServiceImpl implements AdventureService {
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
-    public boolean edit(Adventure adventure, Long instructorId) {
+    public boolean edit(Adventure adventure, Long instructorId) throws Exception{
         Adventure oldAdventure= adventureRepository.findAdventureByName(adventure.getName(),instructorId);
         oldAdventure.setDescription(adventure.getDescription());
         oldAdventure.setAddress(adventure.getAddress());
@@ -114,12 +114,10 @@ public class AdventureServiceImpl implements AdventureService {
         Set<Image> oldImages= oldAdventure.getImages();
         oldAdventure.setAdditionalServices(adventure.getAdditionalServices());
         if(adventure.getImages()==null)  oldAdventure.setImages(new HashSet<>());
-        try {
+
             adventureRepository.save(oldAdventure);
 
-        }catch (ObjectOptimisticLockingFailureException e){
-            return false;
-        }
+
         Set<AdditionalServices> savedServices=adventureRepository.findAdventureByName(adventure.getName(),instructorId).getAdditionalServices();
         if(adventure.getImages()==null)   imageService.delete(oldImages);
         additionalServicesService.delete(additionalServicesService.findDeletedAdditionalServices(oldAdditionalServices,savedServices));

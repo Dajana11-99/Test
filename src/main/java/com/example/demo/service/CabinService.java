@@ -22,7 +22,7 @@ public interface CabinService {
 
     boolean delete(Long id);
 
-    boolean edit(Cabin cabin, Boolean deleteOldImages);
+    boolean edit(Cabin cabin, Boolean deleteOldImages) throws Exception;
     boolean canBeEditedOrDeleted(Long id);
 
 

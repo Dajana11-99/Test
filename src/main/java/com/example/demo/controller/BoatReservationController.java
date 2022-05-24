@@ -42,11 +42,16 @@ public class BoatReservationController {
         BoatReservation boatReservation= boatReservationMapper.boatReservationOwnerDtoToBoatReservation(boatReservationDto);
         BoatOwner boatOwner= boatOwnerService.findByUsername(username);
         boatReservation.getBoat().setBoatOwner(boatOwner);
-        if(boatReservationService.ownerCreates(boatReservation,boatReservationDto.getClientUsername())) {
-            return new ResponseEntity<>("Success.", HttpStatus.OK);
-        }else {
-            return new ResponseEntity<>("Unsuccessfull reservation.", HttpStatus.BAD_REQUEST);
-        }
+       try {
+           if (boatReservationService.ownerCreates(boatReservation, boatReservationDto.getClientUsername())) {
+               return new ResponseEntity<>("Success.", HttpStatus.OK);
+           } else {
+               return new ResponseEntity<>("Unsuccessfull reservation.", HttpStatus.BAD_REQUEST);
+           }
+       }catch (Exception e){
+           return new ResponseEntity<>("Someone made reservation.", HttpStatus.BAD_REQUEST);
+
+       }
     }
 
     @GetMapping(value= "/getByBoatId/{boatId}")
@@ -108,10 +113,14 @@ public class BoatReservationController {
             return new ResponseEntity<>("Client banned from making reservations!", HttpStatus.BAD_REQUEST);
         if(boatReservationCancellationService.clientHasCancellationForBoatInPeriod(boatReservationDto))
             return new ResponseEntity<>("Client has cancellation for boat in given period!", HttpStatus.BAD_REQUEST);
-        if(boatReservationService.makeReservation(boatReservationDto))
-            return new ResponseEntity<>("Success.", HttpStatus.OK);
-        else
-            return new ResponseEntity<>("Boat already reserved in period!", HttpStatus.BAD_REQUEST);
+        try {
+            if(boatReservationService.makeReservation(boatReservationDto))
+                return new ResponseEntity<>("Success.", HttpStatus.OK);
+            else
+                return new ResponseEntity<>("Boat already reserved in period!", HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Someone made reservation!", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping(value= "/getUpcomingReservations")

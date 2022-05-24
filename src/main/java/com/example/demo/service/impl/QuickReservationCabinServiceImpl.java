@@ -47,27 +47,20 @@ public class QuickReservationCabinServiceImpl implements QuickReservationCabinSe
     private final Logger logger= LoggerFactory.getLogger(FirebaseServiceImpl.class);
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
-    public boolean ownerCreates(QuickReservationCabin quickReservationCabin) {
-        if(!validateForReservation(quickReservationCabin)) return false;
+    public boolean ownerCreates(QuickReservationCabin quickReservationCabin) throws Exception {
+        QuickReservationCabin successfullQuickReservation = null;
 
-        QuickReservationCabin successfullQuickReservation=new QuickReservationCabin(quickReservationCabin.getId(),quickReservationCabin.getStartDate(),
-                quickReservationCabin.getEndDate(),null,quickReservationCabin.getPaymentInformation(), quickReservationCabin.isOwnerWroteAReport(),
-                quickReservationCabin.getOwnersUsername(),quickReservationCabin.getCabin(),quickReservationCabin.getDiscount(),null);
-        successfullQuickReservation.setEvaluated(false);
+            if(!validateForReservation(quickReservationCabin)) return false;
 
-        try {
+           successfullQuickReservation=new QuickReservationCabin(quickReservationCabin.getId(),quickReservationCabin.getStartDate(),
+                    quickReservationCabin.getEndDate(),null,quickReservationCabin.getPaymentInformation(), quickReservationCabin.isOwnerWroteAReport(),
+                    quickReservationCabin.getOwnersUsername(),quickReservationCabin.getCabin(),quickReservationCabin.getDiscount(),null);
+            successfullQuickReservation.setEvaluated(false);
             quickReservationCabinRepository.save(successfullQuickReservation);
-        }catch (ObjectOptimisticLockingFailureException e){
-            return false;
-        }
-        if(quickReservationCabin.getAddedAdditionalServices()!=null){
-            successfullQuickReservation.setAddedAdditionalServices(quickReservationCabin.getAddedAdditionalServices());
-            try {
+            if(quickReservationCabin.getAddedAdditionalServices()!=null) {
+                successfullQuickReservation.setAddedAdditionalServices(quickReservationCabin.getAddedAdditionalServices());
                 quickReservationCabinRepository.save(successfullQuickReservation);
-            }catch (ObjectOptimisticLockingFailureException e){
-                return false;
             }
-        }
 
         sendMailNotificationToSubscribedUsers(successfullQuickReservation.getCabin().getId(),successfullQuickReservation.getCabin().getName());
         return true;

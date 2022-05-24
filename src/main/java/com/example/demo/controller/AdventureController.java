@@ -97,10 +97,16 @@ public class AdventureController {
     public ResponseEntity<String> editAdventure(@RequestBody AdventureDto adventureDto){
         FishingInstructor fishingInstructor= fishingInstructorService.findByUsername(adventureDto.getFishingInstructorUsername());
         Adventure adventure = adventureMapper.adventureDtoToEditAdventure(adventureDto);
-        if(adventureService.edit(adventure,fishingInstructor.getId()))
-            return new ResponseEntity<>(SUCCESS, HttpStatus.OK);
-        else
-         return new ResponseEntity<>("You can't edit this adventure because reservations exists !",HttpStatus.BAD_REQUEST);
+  try {
+
+      if (adventureService.edit(adventure, fishingInstructor.getId()))
+          return new ResponseEntity<>(SUCCESS, HttpStatus.OK);
+      else
+          return new ResponseEntity<>("You can't edit this adventure because reservations exists !", HttpStatus.BAD_REQUEST);
+  }catch (Exception e) {
+      return new ResponseEntity<>("You can't edit this adventure because reservations exists !", HttpStatus.BAD_REQUEST);
+
+  }
     }
     @PreAuthorize("hasRole('FISHING_INSTRUCTOR')")
     @GetMapping("/findInstructorsAdventure/{username:.+}/")

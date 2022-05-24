@@ -85,10 +85,15 @@ public class CabinController {
     public ResponseEntity<String> edit(@RequestBody CabinDto cabinDto){
         Cabin cabin=cabinMapper.cabinDtoEditToCabin(cabinDto);
         boolean deleteOldImages= cabinDto.getImages() == null;
-        if(cabinService.edit(cabin,deleteOldImages))
-         return new ResponseEntity<>(SUCCESS,HttpStatus.OK);
+    try {
+        if (cabinService.edit(cabin, deleteOldImages))
+            return new ResponseEntity<>(SUCCESS, HttpStatus.OK);
         else
-         return new ResponseEntity<>("You can't edit this cabin because reservations exists !",HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("You can't edit this cabin because reservations exists !", HttpStatus.BAD_REQUEST);
+    }catch (Exception e){
+        return new ResponseEntity<>("You can't edit this cabin because reservations exists !", HttpStatus.BAD_REQUEST);
+
+    }
     }
 
     @GetMapping("/getAll")

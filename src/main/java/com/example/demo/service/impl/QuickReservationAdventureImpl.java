@@ -48,7 +48,7 @@ public class QuickReservationAdventureImpl implements QuickReservationAdventureS
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
-    public boolean instructorCreates(QuickReservationAdventure quickReservationAdventure) {
+    public boolean instructorCreates(QuickReservationAdventure quickReservationAdventure) throws Exception {
         if(quickReservationAdventure == null) return false;
         if(!validateForReservation(quickReservationAdventure)) return false;
 
@@ -57,19 +57,15 @@ public class QuickReservationAdventureImpl implements QuickReservationAdventureS
                 quickReservationAdventure.getOwnersUsername(),
                 quickReservationAdventure.getAdventure(),quickReservationAdventure.getFishingInstructor(),quickReservationAdventure.getDiscount(),null);
         successfullQuickReservation.setEvaluated(false);
-        try {
+
             quickReservationAdventureRepository.save(successfullQuickReservation);
-        }catch (ObjectOptimisticLockingFailureException e){
-            return false;
-        }
+
 
         if(quickReservationAdventure.getAddedAdditionalServices()!=null){
             successfullQuickReservation.setAddedAdditionalServices(quickReservationAdventure.getAddedAdditionalServices());
-            try {
+
                 quickReservationAdventureRepository.save(successfullQuickReservation);
-            }catch (ObjectOptimisticLockingFailureException e){
-                return false;
-            }
+
         }
         sendMailNotificationToSubscribedUsers(successfullQuickReservation.getAdventure().getId(),successfullQuickReservation.getAdventure().getName());
         return true;

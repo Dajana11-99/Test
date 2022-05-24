@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 public interface AdventureReservationService {
-    boolean instructorCreates(AdventureReservation adventureReservation, String clientUsername);
+    boolean instructorCreates(AdventureReservation adventureReservation, String clientUsername) throws Exception;
     Set<AdventureReservation> getPresentByInstructorId(String username);
     boolean reservationExists(String username, LocalDateTime startDate, LocalDateTime endDate);
     boolean futureReservationsExist(LocalDateTime currentDate, Long id);
@@ -21,7 +21,7 @@ public interface AdventureReservationService {
     AdventureReservation findById(Long id);
     void save (AdventureReservation adventureReservation);
     Set<Adventure> getAvailableAdventures(SearchAvailablePeriodsBoatAndAdventureDto searchAvailablePeriodsAdventureDto);
-    boolean makeReservation(AdventureReservationDto adventureReservationDto);
+    boolean makeReservation(AdventureReservationDto adventureReservationDto) throws Exception;
     Set<AdventureReservation> getUpcomingClientReservationsByUsername(String username);
     Set<AdventureReservation> getClientReservationHistoryByUsername(String username);
     boolean reservationExists(Long id);

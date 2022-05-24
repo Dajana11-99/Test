@@ -55,7 +55,7 @@ public class AdventureReservationServiceImpl implements AdventureReservationServ
     private final AdditionalServiceMapper additionalServiceMapper = new AdditionalServiceMapper();
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
-    public boolean instructorCreates(AdventureReservation adventureReservation, String clientUsername) {
+    public boolean instructorCreates(AdventureReservation adventureReservation, String clientUsername) throws Exception{
         Client client = clientService.findByUsername(clientUsername);
         if(adventureReservation == null) return false;
         if(client == null) return false;
@@ -66,19 +66,15 @@ public class AdventureReservationServiceImpl implements AdventureReservationServ
         PaymentInformation paymentInformation = reservationPaymentService.setTotalPaymentAmount(successfullReservation,successfullReservation.getFishingInstructor());
         successfullReservation.setPaymentInformation(paymentInformation);
         reservationPaymentService.updateUserRankAfterReservation(client,successfullReservation.getFishingInstructor());
-        try {
+
             adventureReservationRepository.save(successfullReservation);
-        }catch (ObjectOptimisticLockingFailureException e){
-            return false;
-        }
+
 
         if(adventureReservation.getAddedAdditionalServices()!=null){
             successfullReservation.setAddedAdditionalServices(adventureReservation.getAddedAdditionalServices());
-            try {
+
                 adventureReservationRepository.save(successfullReservation);
-            }catch (ObjectOptimisticLockingFailureException e){
-                return false;
-            }
+
         }
 
         sendMailNotification(successfullReservation,client.getUsername());
@@ -209,28 +205,20 @@ public class AdventureReservationServiceImpl implements AdventureReservationServ
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
-    public boolean makeReservation(AdventureReservationDto adventureReservationDto) {
+    public boolean makeReservation(AdventureReservationDto adventureReservationDto) throws Exception {
         if(fishingInstructorNotFree(adventureReservationDto.getOwnersUsername(), adventureReservationDto.getStartDate(), adventureReservationDto.getEndDate()))
             return false;
         AdventureReservation adventureReservation = setUpAdventureReservationFromDto(adventureReservationDto);
         PaymentInformation paymentInformation = reservationPaymentService.setTotalPaymentAmount(adventureReservation, adventureReservation.getFishingInstructor());
         adventureReservation.setPaymentInformation(paymentInformation);
         reservationPaymentService.updateUserRankAfterReservation(adventureReservation.getClient(), adventureReservation.getFishingInstructor());
-        try {
+
             adventureReservationRepository.save(adventureReservation);
-        }catch (ObjectOptimisticLockingFailureException e){
-            return false;
-        }
 
         if(adventureReservationDto.getAddedAdditionalServices()!=null)
         {
             adventureReservation.setAddedAdditionalServices(additionalServiceMapper.additionalServicesDtoToAdditionalServices(adventureReservationDto.getAddedAdditionalServices()));
-            try {
-                adventureReservationRepository.save(adventureReservation);
-            }catch (ObjectOptimisticLockingFailureException e){
-                return false;
-            }
-
+            adventureReservationRepository.save(adventureReservation);
         }
         SendReservationMailToClient(adventureReservationDto);
         return true;
