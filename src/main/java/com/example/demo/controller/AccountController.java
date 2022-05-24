@@ -64,9 +64,9 @@ public class AccountController {
 
             try {
                 if (!userService.sendDenyReason(mailDto.getResponse(), mailDto.getRecipient()))
-                    return new ResponseEntity<>("Reason is already sent!", HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>("Reason has already  been responded!", HttpStatus.BAD_REQUEST);
             } catch (Exception e) {
-                return new ResponseEntity<>("Reason is already sent!", HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>("Reason has already  been responded!", HttpStatus.BAD_REQUEST);
             }
             return new ResponseEntity<>(SUCCESS, HttpStatus.OK);
 
