@@ -34,7 +34,7 @@ public interface QuickReservationAdventureRepository extends JpaRepository<Quick
     @Query(value="select * from quick_reservation_adventure r where :currentDate <= r.start_date and r.users_id IS NULL ",nativeQuery = true)
     Set<QuickReservationAdventure> getAvailableReservations(@Param("currentDate") LocalDateTime currentDate);
 
-    @Query(value="SELECT CASE WHEN  COUNT(r) > 0 THEN true ELSE false END FROM quick_reservation_adventure r where r.owners_username=:username and r.start_date<=:endDate and r.end_date>=:startDate and r.users_id IS NOT NULL",nativeQuery = true)
+    @Query(value="SELECT CASE WHEN  COUNT(r) > 0 THEN true ELSE false END FROM quick_reservation_adventure r where r.owners_username=:username and r.start_date<=:endDate and r.end_date>=:startDate ",nativeQuery = true)
     boolean instructorHasReservationInPeriod(@Param("username")String username, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 
     @Query(value="SELECT * FROM quick_reservation_adventure where users_id=:user_id and (:currentDate <= start_date) ",nativeQuery = true)
