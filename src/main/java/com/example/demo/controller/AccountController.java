@@ -77,11 +77,11 @@ public class AccountController {
     public ResponseEntity<String> sendAcceptReasonForDeletingAccount(@RequestBody MailDto mailDto) throws MessagingException {
        try {
            if(!userService.sendAcceptReason(mailDto.getResponse(),mailDto.getRecipient())){
-               return new ResponseEntity<>("User is already deleted!", HttpStatus.BAD_REQUEST);
+               return new ResponseEntity<>("Someone already responded to this request!", HttpStatus.BAD_REQUEST);
            }
            return new ResponseEntity<>(SUCCESS, HttpStatus.OK);
        }catch (Exception e){
-           return new ResponseEntity<>("User is already deleted!", HttpStatus.BAD_REQUEST);
+           return new ResponseEntity<>("Someone already responded to this request!", HttpStatus.BAD_REQUEST);
 
        }
 
