@@ -31,4 +31,9 @@ public class Client extends User{
     public String getRoleApp() {
         return roleApp;
     }
+
+    public Client(Long id, String username){
+        this.id = id;
+        this.username = username;
+    }
 }

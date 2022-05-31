@@ -56,9 +56,9 @@ public class CabinReservationController {
         if(cabinReservationCancellationService.clientHasCancellationForCabinInPeriod(cabinReservationDto))
             return new ResponseEntity<>("Client has cancellation for cabin in given period!", HttpStatus.BAD_REQUEST);
         try {
-            if(reservationCabinService.makeReservation(cabinReservationDto).equals("TRUE"))
+            if(reservationCabinService.makeReservation(cabinReservationDto))
                 return new ResponseEntity<>("Success.", HttpStatus.OK);
-            else if(reservationCabinService.makeReservation(cabinReservationDto).equals("FALSE"))
+            else if(reservationCabinService.makeReservation(cabinReservationDto))
                 return new ResponseEntity<>("Cabin already reserved in period!", HttpStatus.BAD_REQUEST);
             else
                 return new ResponseEntity<>("Cabin has been edited.Please try again.", HttpStatus.BAD_REQUEST);

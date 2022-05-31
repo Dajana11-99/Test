@@ -95,10 +95,9 @@ public class ReservationCabinServiceImpl implements ReservationCabinService {
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
-    public String makeReservation(CabinReservationDto cabinReservationDto) throws Exception{
-
+    public boolean makeReservation(CabinReservationDto cabinReservationDto) throws Exception{
             if(cabinNotFreeInPeriod(cabinReservationDto.getCabinDto().getId(), cabinReservationDto.getStartDate(), cabinReservationDto.getEndDate()))
-                return "FALSE";
+                return false;
             CabinReservation cabinReservation = setUpCabinReservationFromDto(cabinReservationDto);
             PaymentInformation paymentInformation = reservationPaymentService.setTotalPaymentAmount(cabinReservation,cabinReservation.getCabin().getCabinOwner());
             cabinReservation.setPaymentInformation(paymentInformation);
@@ -107,14 +106,11 @@ public class ReservationCabinServiceImpl implements ReservationCabinService {
             if(cabinReservationDto.getAddedAdditionalServices()!=null)
             {
                 cabinReservation.setAddedAdditionalServices(additionalServiceMapper.additionalServicesDtoToAdditionalServices(cabinReservationDto.getAddedAdditionalServices()));
-
                 cabinReservationRepository.save(cabinReservation);
 
             }
-
-
         SendReservationMailToClient(cabinReservationDto);
-        return "TRUE";
+        return true;
     }
 
     @Override

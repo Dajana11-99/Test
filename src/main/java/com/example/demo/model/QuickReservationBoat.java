@@ -33,6 +33,13 @@ public class QuickReservationBoat extends Reservation{
         this.addedAdditionalServices = addedAdditionalServices;
         this.needsCaptainServices = needsCaptainServices;
     }
+    public QuickReservationBoat(Long id, LocalDateTime startDate, LocalDateTime endDate, Client client) {
+        this.id = id;
+        this.setStartDate(startDate);
+        this.setEndDate(endDate);
+        this.client = client;
+    }
+
 
     public Integer getDiscount() {
         return discount;

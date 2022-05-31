@@ -32,33 +32,33 @@ public class OwnersReportServiceTest {
     @Test
     public void testFindAllUnApprovedReports() {
 
-//        OwnersReport ownersReport = new OwnersReport(1L,true,"BAD","co@gmail.com","cl@gmail.com",false);
-//        OwnersReport ownersReport1 = new OwnersReport(2L,true,"BAD","co@gmail.com","cl@gmail.com",false);
-//        OwnersReport ownersReport2 = new OwnersReport(3L,true,"BAD","co@gmail.com","cl@gmail.com",true);
-//        OwnersReport ownersReport3 = new OwnersReport(4L,false,"BAD","co@gmail.com","cl@gmail.com",false);
-//
-//        when(ownersReportRepository.findAll()).thenReturn(Arrays.asList(ownersReport1,ownersReport,ownersReport2,ownersReport3));
-//
-//        List<OwnersReport> ownersReports = ownersReportService.getAllUnApprovedReports();
-//        List<OwnersReport> allReports = ownersReportService.findAll();
-//        assertThat(ownersReports).hasSize(allReports.size()-2);
+        OwnersReport ownersReport = new OwnersReport(1L,true,"BAD","co@gmail.com","cl@gmail.com",false);
+        OwnersReport ownersReport1 = new OwnersReport(2L,true,"BAD","co@gmail.com","cl@gmail.com",false);
+        OwnersReport ownersReport2 = new OwnersReport(3L,true,"BAD","co@gmail.com","cl@gmail.com",true);
+        OwnersReport ownersReport3 = new OwnersReport(4L,false,"BAD","co@gmail.com","cl@gmail.com",false);
+
+        when(ownersReportRepository.findAll()).thenReturn(Arrays.asList(ownersReport1,ownersReport,ownersReport2,ownersReport3));
+
+        List<OwnersReport> ownersReports = ownersReportService.getAllUnApprovedReports();
+        List<OwnersReport> allReports = ownersReportService.findAll();
+        assertThat(ownersReports).hasSize(allReports.size()-2);
 
     }
 
     @Test
     public void testUpdateReviewStatus() {
 
-//        OwnersReport ownersReport = new OwnersReport(100L,true,"BAD","co@gmail.com","cl@gmail.com",false);
-//
-//        when(ownersReportRepository.getById(100L)).thenReturn(ownersReport);
-//
-//        OwnersReport ownersReportExists = ownersReportService.setReviewStatus(ownersReport.getId());
-//
-//        when(ownersReportRepository.save(ownersReportExists)).thenReturn(ownersReportExists);
-//
-//        OwnersReport result = ownersReportService.findById(100L);
-//
-//        assertThat(result.isApproved()).isEqualTo(true);
+        OwnersReport ownersReport = new OwnersReport(100L,true,"BAD","co@gmail.com","cl@gmail.com",false);
+
+        when(ownersReportRepository.getById(100L)).thenReturn(ownersReport);
+
+        OwnersReport ownersReportExists = ownersReportService.setReviewStatus(ownersReport.getId());
+
+        when(ownersReportRepository.save(ownersReportExists)).thenReturn(ownersReportExists);
+
+        OwnersReport result = ownersReportService.findById(100L);
+
+        assertThat(result.isApproved()).isEqualTo(true);
 
     }
 

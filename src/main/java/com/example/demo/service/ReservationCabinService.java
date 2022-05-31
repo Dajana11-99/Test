@@ -14,7 +14,7 @@ public interface ReservationCabinService {
 
     Set<Cabin> getAvailableCabins(SearchAvailablePeriodsCabinDto searchAvailablePeriodsCabinDto);
 
-    String makeReservation(CabinReservationDto cabinReservationDto) throws Exception;
+    boolean makeReservation(CabinReservationDto cabinReservationDto) throws Exception;
 
     boolean ownerCreates(CabinReservation cabinReservation, String clientUsername) throws Exception;
 

@@ -23,6 +23,11 @@ public class FishingInstructor extends  User {
     @OneToMany(mappedBy = "fishingInstructor", fetch = FetchType.EAGER, cascade = CascadeType.DETACH, orphanRemoval = true)
     private Set<AvailableInstructorPeriod> availableInstructorPeriods;
 
+    public FishingInstructor(Long id, String username) {
+        this.id = id;
+        this.username = username;
+    }
+
     @Override
     public String getRoleApp() {
         return roleApp;
