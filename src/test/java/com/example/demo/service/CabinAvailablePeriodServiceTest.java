@@ -54,7 +54,7 @@ public class CabinAvailablePeriodServiceTest {
         LocalDateTime freeDaysEnd=currentDate.plusDays(3);
         AvailableCabinPeriod availableCabinPeriod=new AvailableCabinPeriod(1L,availableDaysStart,availableDaysEnd,new CabinOwner(),new Cabin());
 
-        when(availableCabinPeriodRepository.save(availableCabinPeriod));
+       // when(availableCabinPeriodRepository.save(availableCabinPeriod));
 
         assertEquals(availableCabinPeriod.getStartDate(),freeDaysEnd.plusMinutes(1));
         assertEquals(availableCabinPeriod.getEndDate(),availableDaysEnd);
