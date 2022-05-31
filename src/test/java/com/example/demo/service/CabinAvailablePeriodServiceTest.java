@@ -55,7 +55,7 @@ public class CabinAvailablePeriodServiceTest {
         AvailableCabinPeriod availableCabinPeriod=new AvailableCabinPeriod(1L,availableDaysStart,availableDaysEnd,new CabinOwner(),new Cabin());
         AvailableCabinPeriod freeDays=new AvailableCabinPeriod(1L,availableDaysStart,freeDaysEnd,new CabinOwner(),new Cabin());
 
-        when(availableCabinPeriodRepository.findAll()).thenReturn(Arrays.asList(availableCabinPeriod));
+        //when(availableCabinPeriodRepository.findAll()).thenReturn(Arrays.asList(availableCabinPeriod));
         availableCabinPeriodService.setEditedAvailablePeriod(availableCabinPeriod,freeDays);
         when(availableCabinPeriodRepository.save(availableCabinPeriod));
 
