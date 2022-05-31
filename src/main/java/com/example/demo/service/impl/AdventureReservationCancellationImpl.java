@@ -32,14 +32,14 @@ public class AdventureReservationCancellationImpl implements AdventureReservatio
     private ReservationPaymentService reservationPaymentService;
     @Autowired
     private QuickReservationAdventureRepository quickReservationAdventureRepository;
-    @Override
+  
+	 @Override
     public boolean addCancellation(AdventureReservationDto adventureReservationDto) {
         AdventureReservation adventureReservation = adventureReservationRepository.getById(adventureReservationDto.getId());
+        if(getDateWithoutTime(adventureReservation.getStartDate()).isBefore(getDateWithoutTime(LocalDateTime.now().plusDays(3))))
+            return false;
         AdventureReservationCancellation adventureReservationCancellation = new AdventureReservationCancellation(null, adventureReservation.getClient(), adventureReservation.getStartDate(), adventureReservation.getEndDate(), adventureReservation.getFishingInstructor());
         adventureReservation.setAddedAdditionalServices(new HashSet<>());
-        System.out.println("STIGAO"+ adventureReservation.getId());
-        System.out.println("STIGAO"+ adventureReservation.getClient());
-        System.out.println("STIGAO"+ adventureReservation.getFishingInstructor());
         reservationPaymentService.resetLoyaltyStatusAfterCancellation(adventureReservation.getClient(), adventureReservation.getFishingInstructor());
         adventureReservationRepository.save(adventureReservation);
         adventureReservationRepository.deleteByReservationId(adventureReservation.getId());

@@ -40,9 +40,14 @@ public class AdventureSubscriptionServiceImpl implements AdventureSubscriptionSe
         return adventureSubscriptionRepository.subscriptionExists(adventureId, clientService.findByUsername(username).getId());
     }
 
-    @Override
+   @Override
     public Set<AdventureSubscription> findSubscriptionsByClientUsername(String username) {
-        return adventureSubscriptionRepository.findSubscriptionsByClientId(clientService.findByUsername(username).getId());
+        Long clientId = clientService.findByUsername(username).getId();
+        Set<AdventureSubscription> subscriptions = new HashSet<>();
+        for(AdventureSubscription subscription:adventureSubscriptionRepository.findAll())
+            if(subscription.getClient().getId().equals(clientId))
+                subscriptions.add(subscription);
+        return subscriptions;
     }
 
     @Override
