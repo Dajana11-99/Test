@@ -11,17 +11,18 @@
 /*sifra: 123*/INSERT INTO users (role, id, activation_url, city, country, latitude, longitude, street_and_num, username,         enabled, last_name, last_password_reset_date, name, password, phone_num,reason_for_deleting,current_points,rank_type, is_predefined,version) values ('CLIENT',11,null, 'Novi Sad','Serbia',45.267136,19.833549, 'ULICA','cl@gmail.com', true, 'Rasta','2022-01-04 15:31:53.899','Nikolic','$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','+3810616789856','',0,0,null,0);
 
 /*sifra: 123*/INSERT INTO users (role, id, activation_url, city, country, latitude, longitude, street_and_num, username,         enabled, last_name, last_password_reset_date, name, password, phone_num,reason_for_deleting,current_points,rank_type, is_predefined,version) values ('CLIENT',12,null, 'Novi Sad','Serbia',45.267136,19.833549, 'ULICA','isa.projekat.tim.15@gmail.com', true, 'Magdalena','2022-01-04 15:31:53.899','Reljin','$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','+3810616789856','',0,0,null,0);
-/*sifra: 123*/INSERT INTO users (role, id, activation_url, city, country, latitude, longitude, street_and_num, username,       enabled, last_name, last_password_reset_date, name, password, phone_num,reason_for_deleting,current_points,rank_type, is_predefined, registration_reason,rating,version) values ('CABINOWNER',13,null, 'Beograd','Serbia',45.267136,19.833549, 'ULICA','isa.testing.tim15@gmail.com',false, 'Vlasnik','2022-01-04 15:31:53.899','Vikendice','$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','+3810616789856','',0,0,null,'Da zaradim malo.',5.0,0);
-
+/*sifra: 123*/INSERT INTO users (role, id, activation_url, city, country, latitude, longitude, street_and_num, username,       enabled, last_name, last_password_reset_date, name, password, phone_num,reason_for_deleting,current_points,rank_type, is_predefined, registration_reason,rating,version) values ('CABINOWNER',13,null, 'Beograd','Serbia',45.267136,19.833549, 'ULICA','isa.testing.tim15@gmail.com',true, 'Vlasnik','2022-01-04 15:31:53.899','Vikendice','$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','+3810616789856','sdfsdfsdfsdf',0,0,null,'Da zaradim malo.',5.0,0);
+/*sifra: 123*/INSERT INTO users (role, id, activation_url, city, country, latitude, longitude, street_and_num, username,         enabled, last_name, last_password_reset_date, name, password, phone_num,reason_for_deleting,current_points,rank_type, is_predefined,version) values ('CLIENT',14,null, 'Novi Sad','Serbia',45.267136,19.833549, 'ULICA','miticrajko@gmail.com', true, 'Rajko','2022-01-04 15:31:53.899','Mitic','$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','+38106103041945','',0,0,null,0);
+/*sifra: 123*/INSERT INTO users (role, id, activation_url, city, country, latitude, longitude, street_and_num, username,         enabled, last_name, last_password_reset_date, name, password, phone_num,reason_for_deleting,current_points,rank_type, is_predefined,version) values ('CLIENT',15,null, 'Novi Sad','Serbia',45.267136,19.833549, 'ULICA','test@gmail.com', false, 'Rajko','2022-01-04 15:31:53.899','Mitic','$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra','+38106103041945','asdsdasdas',0,0,null,0);
 
 INSERT INTO AUTHORITY (id ,name) VALUES (1, 'ROLE_ADMIN');
 INSERT INTO AUTHORITY (id ,name) VALUES (2, 'ROLE_CABINOWNER');
 INSERT INTO AUTHORITY (id ,name) VALUES (3, 'ROLE_BOATOWNER');
 INSERT INTO AUTHORITY (id ,name) VALUES (4, 'ROLE_FISHING_INSTRUCTOR');
 INSERT INTO AUTHORITY (id ,name) VALUES (6, 'ROLE_CLIENT');
-INSERT INTO RANK (id ,discount_percentage,points,rank) VALUES (1, 0,0,0);
-INSERT INTO RANK (id ,discount_percentage,points,rank) VALUES (2, 10,100,1);
-INSERT INTO RANK (id ,discount_percentage,points,rank) VALUES (3, 20,250,2);
+INSERT INTO RANK (id ,discount_percentage,points,rank_type) VALUES (1, 0,0,0);
+INSERT INTO RANK (id ,discount_percentage,points,rank_type) VALUES (2, 10,100,1);
+INSERT INTO RANK (id ,discount_percentage,points,rank_type) VALUES (3, 20,250,2);
 
 INSERT INTO RESERVATION_POINTS (id ,app_profit_percentage,cancelation_fee_percentage,client_points,owner_points) VALUES (1, 3,2,1,1);
 
@@ -41,16 +42,18 @@ INSERT INTO USER_AUTHORITY (user_id, authority_id) VALUES (11, 6);
 INSERT INTO USER_AUTHORITY (user_id, authority_id) VALUES (12, 6);
 INSERT INTO USER_AUTHORITY (user_id, authority_id) VALUES (13, 2);
 
+INSERT INTO USER_AUTHORITY (user_id, authority_id) VALUES (15, 6);
+
+
 
 /*
 INSERT INTO USER_AUTHORITY (user_id, authority_id) VALUES (3, 1);*/
+
 
 INSERT INTO cabin (id, city, country, latitude, longitude, street_and_num, beds_per_room, canceling_conditions, description, name, num_of_rooms, price, rating, rules, users_id,version) VALUES (1, 'Futog', 'Serbia', 19.70209747623802, 45.2380879559517, 'Cara Lazara 7', 1, 'NOT FREE', 'Modern enterior.', 'Scandinavian cabin', 2, 50, 0, 'No pets. ', 2,0);
 INSERT INTO cabin (id, city, country, latitude, longitude, street_and_num, beds_per_room, canceling_conditions, description, name, num_of_rooms, price, rating, rules, users_id,version) VALUES (2, 'Stara Pazova', 'Serbia', 20.286003649944078, 44.9576790966988, 'Ribarska 11', 3, 'FREE', 'Riverside cabin. Fishing paradise.', 'Rustic river cabin', 1, 100, 0, 'No rules.', 2,0);
 INSERT INTO cabin (id, city, country, latitude, longitude, street_and_num, beds_per_room, canceling_conditions, description, name, num_of_rooms, price, rating, rules, users_id,version) VALUES (3, 'Kovin ', 'Serbia', 20.980619814575245, 44.73054505989905, 'Krecanska 11', 2, 'NOT FREE', 'Resort away from the city noise.', 'Riverside cottage', 3, 210, 0, 'No loud music.', 7,0);
 INSERT INTO cabin (id, city, country, latitude, longitude, street_and_num, beds_per_room, canceling_conditions, description, name, num_of_rooms, price, rating, rules, users_id,version) VALUES (4, 'Smederevo ', 'Serbia', 20.934652609760892, 44.67288305649467, 'Djure Strugara 11', 1, 'FREE', 'Lots of space for fishing equipment.', 'Little fishing house', 2, 25, 0, 'No smoking. ', 7,0);
-
-insert into cabin_subscription (id,users_id,cabin_id) values (1,12,2);
 
 INSERT INTO boat (id, city, country, latitude, longitude, street_and_num, canceling_condition, description, engine_code, engine_power, fishing_equipment, length, max_people, max_speed, name, navigation_equipment, price, rating, rules, type, users_id,version) VALUES (1, 'Belgrade', 'Serbia', 20.449263181052668, 44.81634586374156, 'Dunavski kej 5b', 'NOT FREE', 'Luxury fishing yacht.', 'DF4656', '23452', 'Hooks, lines, sinkers, floats, rods, reels.', 35, 15, '32133', 'Fishing yacht', 'GPS', 300, 0, 'No rules.', 'yacht', 8,0);
 INSERT INTO boat (id, city, country, latitude, longitude, street_and_num, canceling_condition, description, engine_code, engine_power, fishing_equipment, length, max_people, max_speed, name, navigation_equipment, price, rating, rules, type, users_id,version) VALUES (2, 'Petrovaradin', 'Serbia', 19.862343371623766, 45.238477211535, 'Ribnjak Donji put 51a', 'NOT FREE', 'The best boat for fishing trips.', 'mercury', '2560', 'Lures, spears, nets, gaffs, traps, waders and tackle boxes.', 35, 5, '3324', 'Boston whaler', 'Radar, gyro compas,echo sounder.', 150, 0, 'No rules.', 'fishing boat', 3,0);
@@ -61,6 +64,10 @@ INSERT INTO adventure (id, city, country, latitude, longitude, street_and_num, c
 INSERT INTO adventure (id, city, country, latitude, longitude, street_and_num, canceling_condition, description, equipment, instructors_biography, max_people, name, price, rules, users_id,version) VALUES (2, 'Kostolac', 'Serbia', 21.16904786256799, 44.71575022220559, 'Dunavska 7A', 'FREE', 'Fishing classes safe for kids.', 'Hooks, lines, sinkers, floats, rods, reels, baits.', 'Licensed fishing instructor with 30 years of experience.', 10, 'Teaching kids how to fish', 150, 'No special rules.', 4,0);
 INSERT INTO adventure (id, city, country, latitude, longitude, street_and_num, canceling_condition, description, equipment, instructors_biography, max_people, name, price, rules, users_id,version) VALUES (3, 'Bajina Basta ', 'Serbia', 19.396795367345533, 43.88933175347052, 'Zaovine', 'FREE', 'Fun adventure for all ages.', 'Hooks, lines, sinkers, floats.', 'Licensed instructor. ', 3, 'Carp Fishing Tour', 70, 'No non-swimmers. No kids.', 9,0);
 INSERT INTO adventure (id, city, country, latitude, longitude, street_and_num, canceling_condition, description, equipment, instructors_biography, max_people, name, price, rules, users_id,version) VALUES (4, 'Smederevo ', 'Serbia', 20.933046702303997, 44.671871390896925, 'Djure Strugara 5', 'FREE', 'The most visited adventure.', 'Reels, baits, lures, spears, nets, gaffs.', 'Liscensed fishing instructor.', 10, 'Familly fishing', 100, 'No rules.', 9,0);
+
+
+insert into cabin_subscription (id,users_id,cabin_id) values (1,12,2);
+
 
 
 INSERT INTO services (id, name, price) VALUES (1, 'WiFi', 2);
@@ -126,5 +133,15 @@ INSERT INTO cabin_reservation (id, end_date, evaluated, owner_wroteareport, owne
 
 INSERT INTO adventure_reservation (id, end_date, evaluated, owner_wroteareport, owners_username, companys_part, owners_part, total_price, start_date, successfull, users_id, adventure_id, instructors_id) VALUES (4, '2022-04-10 12:26:00', false, false, 'fi@gmail.com', 0.10000000000000009, 3.2333333333333334, 3.3333333333333335, '2022-04-10 12:25:00', true, 11, 1, 4);
 INSERT INTO adventure_reservation (id, end_date, evaluated, owner_wroteareport, owners_username, companys_part, owners_part, total_price, start_date, successfull, users_id, adventure_id, instructors_id) VALUES (5, '2022-04-10 12:28:00', false, false, 'fi@gmail.com', 0.10000000000000009, 3.2333333333333334, 3.3333333333333335, '2022-04-10 12:27:00', true, 6, 1, 4);
-INSERT INTO adventure_reservation (id, end_date, evaluated, owner_wroteareport, owners_username, companys_part, owners_part, total_price, start_date, successfull, users_id, adventure_id, instructors_id) VALUES (6, '2022-04-10 12:34:00', false, false, 'fi@gmail.com', 0.40000000000000036, 12.933333333333334, 13.333333333333334, '2022-04-10 12:30:00', true, 10, 1, 4);
+INSERT INTO adventure_reservation (id, end_date, evaluated, owner_wroteareport, owners_username, companys_part, owners_part, total_price, start_date, successfull, users_id, adventure_id, instructors_id) VALUES (6, '2022-04-10 12:34:00', true, false, 'fi@gmail.com', 0.40000000000000036, 12.933333333333334, 13.333333333333334, '2022-04-10 12:30:00', true, 10, 1, 4);
+INSERT INTO adventure_reservation (id, end_date, evaluated, owner_wroteareport, owners_username, companys_part, owners_part, total_price, start_date, successfull, users_id, adventure_id, instructors_id) VALUES (7, '2022-07-11 13:00:00', false, false, 'fi@gmail.com', 0.40000000000000036, 12.933333333333334, 13.333333333333334, '2022-07-11 12:00:00', true, 11, 1, 4);
+
+INSERT INTO adventure_reservation_cancellation (id, end_date, start_date, users_id, instructor_id) VALUES (1, '2022-07-10 12:23:00', '2022-07-04 12:24:00', 10, 4);
+INSERT INTO adventure_reservation_cancellation (id, end_date, start_date, users_id, instructor_id) VALUES (2, '2022-07-13 12:23:00', '2022-07-11 12:24:00', 10, 4);
+
+INSERT INTO penalties (id, date, users_id) VALUES (1, '2022-07-10 12:23:00',  14);
+INSERT INTO penalties (id, date, users_id) VALUES (2, '2022-07-11 12:23:00',  14);
+INSERT INTO penalties (id, date, users_id) VALUES (3, '2022-07-12 12:23:00',  14);
+
+INSERT INTO quick_reservation_adventure (id, end_date, evaluated, owner_wroteareport, owners_username, companys_part, owners_part, total_price, start_date, successfull, discount, users_id, adventure_id, instructors_id) VALUES (1, '2022-07-12 13:00:00', false, false, 'fi@gmail.com', 0.0, 0, 200, '2022-07-12 12:00:00', true, 10, null, 1, 4);
 
