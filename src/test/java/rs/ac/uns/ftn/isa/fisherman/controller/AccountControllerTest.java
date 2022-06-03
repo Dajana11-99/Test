@@ -13,6 +13,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import rs.ac.uns.ftn.isa.fisherman.dto.MailDto;
 import rs.ac.uns.ftn.isa.fisherman.dto.UserRequestDTO;
@@ -41,6 +42,7 @@ public class AccountControllerTest {
     }
 
     @Test
+    @Transactional
     @WithMockUser(authorities = "ROLE_ADMIN")
     public void testActiveAccount() throws Exception {
         UserRequestDTO userRequestDTO = new UserRequestDTO("isa.projekat.tim.15@gmail.com","Magdalena","Reljin","CABINOWNER","asdasdasd",0.0,"",0);
@@ -52,6 +54,8 @@ public class AccountControllerTest {
     }
 
     @Test
+
+    @Transactional
     @WithMockUser(authorities = "ROLE_ADMIN")
     public void testDenyAccount() throws Exception {
         UserRequestDTO userRequestDTO = new UserRequestDTO("test@gmail.com","Rajko","Mitic","CLIENT","asdasdasd",0.0,"",0);
@@ -64,6 +68,7 @@ public class AccountControllerTest {
 
     @Test
     @Rollback(true)
+    @Transactional
     @WithMockUser(authorities = "ROLE_ADMIN")
     public void testAcceptReasonForDeletingAccount() throws Exception {
         MailDto mailDto = new MailDto("Ok!","isa.testing.tim15@gmail.com");

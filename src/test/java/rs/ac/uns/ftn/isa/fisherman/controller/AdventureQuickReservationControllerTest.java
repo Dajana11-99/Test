@@ -16,6 +16,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import rs.ac.uns.ftn.isa.fisherman.dto.*;
 
@@ -45,6 +46,7 @@ public class AdventureQuickReservationControllerTest {
     }
 
     @Test
+    @Transactional
     @WithMockUser(authorities = "ROLE_CLIENT")
     public void testMakeQuickReservationSuccessful() throws Exception {
         AdventureDto adventureDto = new AdventureDto(1L,"Gepard fish adventure", new AddressDTO(21.1158834777415, 44.74496215218308, "Serbia","Kovin ", "Dunavska 3"),
