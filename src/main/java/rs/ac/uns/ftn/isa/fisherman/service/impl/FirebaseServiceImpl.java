@@ -66,7 +66,7 @@ public class FirebaseServiceImpl implements FirebaseService {
 
             File file = this.convertToFile(multipartFile, fileName);
             this.uploadFile(file, fileName);
-            file.delete(); //NOSONAR
+            file.delete(); 
             return fileName;
         } catch (Exception e) {
             logger.error(e.toString());
