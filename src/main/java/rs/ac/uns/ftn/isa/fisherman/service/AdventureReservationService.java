@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Set;
 
 public interface AdventureReservationService {
-
     boolean instructorCreates(AdventureReservation adventureReservation, String clientUsername) throws Exception;
     Set<AdventureReservation> getPresentByInstructorId(String username);
     boolean reservationExists(String username, LocalDateTime startDate, LocalDateTime endDate);

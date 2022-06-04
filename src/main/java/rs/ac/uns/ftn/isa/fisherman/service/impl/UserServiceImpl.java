@@ -151,10 +151,19 @@ public class UserServiceImpl implements UserService {
     }
     public void denyAccount(User user,String reason){
         String email=user.getUsername();
+        System.out.println("Usaooo email"+email);
         userRepository.delete(user);
+
+        System.out.println("prosao delete");
         try {
+
+            System.out.println("usao u try");
             mailService.sendMail(email,reason,new AccountDeniedInfo());
+
+            System.out.println("poslaoo mejl");
         } catch (MessagingException e) {
+
+            System.out.println("nijeee poslaoo mejl");
             logger.error(e.toString());
         }
     }

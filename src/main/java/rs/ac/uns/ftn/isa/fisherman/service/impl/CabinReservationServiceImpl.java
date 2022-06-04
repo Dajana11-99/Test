@@ -257,8 +257,8 @@ public class CabinReservationServiceImpl implements CabinReservationService {
 
     private boolean validateForReservation(CabinReservation cabinReservation,Client client){
         if(client==null) return false;
-       /* if(!cabinReservationRepository.clientHasReservation(cabinReservation.getCabin().
-                getId(),client.getId(),LocalDateTime.now())) return false;*/
+        if(!cabinReservationRepository.clientHasReservation(cabinReservation.getCabin().
+                getId(),client.getId(),LocalDateTime.now())) return false;
 
         if(!availableCabinPeriodService.cabinIsAvailable(cabinReservation.getCabin()
                 .getId(),cabinReservation.getStartDate(),cabinReservation.getEndDate())) return false;

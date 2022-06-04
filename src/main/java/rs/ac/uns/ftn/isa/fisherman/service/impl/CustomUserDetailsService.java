@@ -27,6 +27,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private AdminRepository adminRepository;
 
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired

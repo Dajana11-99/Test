@@ -107,9 +107,9 @@ public class BoatReservationServiceImpl implements BoatReservationService {
     private boolean validateForReservation(BoatReservation boatReservation,Client client){
         LocalDateTime currentDate= LocalDateTime.now();
         if(client==null) return false;
-        /*if(!boatReservationRepository.clientHasReservation(boatReservation.getBoat().
+        if(!boatReservationRepository.clientHasReservation(boatReservation.getBoat().
                 getId(),client.getId(),currentDate)) return false;
-*/
+
         if(!availableBoatPeriodService.boatIsAvailable(boatReservation.getBoat()
                 .getId(),boatReservation.getStartDate(),boatReservation.getEndDate())) {
             return false;

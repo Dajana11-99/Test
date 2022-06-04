@@ -42,7 +42,7 @@ public class FirebaseServiceImpl implements FirebaseService {
         Credentials credentials = GoogleCredentials.fromStream(new FileInputStream(currentDirectory+"/src/main/resources/firebaseToken.json"));
         Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
         storage.create(blobInfo, Files.readAllBytes(file.toPath()));
-        return String.format(DOWNLOAD_URL, URLEncoder.encode(fileName, StandardCharsets.UTF_8.name()));
+        return String.format(DOWNLOAD_URL, URLEncoder.encode(fileName, StandardCharsets.UTF_8));
     }
     private File convertToFile(MultipartFile multipartFile, String fileName) throws IOException
     {
@@ -66,7 +66,7 @@ public class FirebaseServiceImpl implements FirebaseService {
 
             File file = this.convertToFile(multipartFile, fileName);
             this.uploadFile(file, fileName);
-            file.delete(); 
+            file.delete(); //NOSONAR
             return fileName;
         } catch (Exception e) {
             logger.error(e.toString());
@@ -88,7 +88,7 @@ public class FirebaseServiceImpl implements FirebaseService {
     @Override
     public void uploadCabinImage(MultipartFile newImage,String cabinName) throws IOException {
         String newFileName= upload(newImage);
-       // download(newFileName);
+      //  download(newFileName);
         Image image = new Image(null,newFileName);
         cabinService.addNewImage(cabinName,image);
     }
@@ -104,7 +104,7 @@ public class FirebaseServiceImpl implements FirebaseService {
     @Override
     public void uploadBoatImage(MultipartFile newImage, Boat boat) throws IOException {
         String newFileName= upload(newImage);
-        //download(newFileName);
+       //download(newFileName);
         Image image = new Image(null,newFileName);
         boatService.addNewImage(boat,image);
     }

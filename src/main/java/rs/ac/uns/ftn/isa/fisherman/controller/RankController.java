@@ -30,7 +30,7 @@ public class RankController {
     }
 
     @GetMapping("/getAll")
-    @PreAuthorize("hasRole('ADMIN') " + "|| hasRole('CLIENT')")
+    @PreAuthorize("hasRole('ADMIN') || hasRole('CABINOWNER') || hasRole('BOATOWNER') || hasRole('FISHING_INSTRUCTOR') || hasRole('CLIENT')")
     public ResponseEntity<List<RankDto>> getAll () {
         List<RankDto> ranks= new ArrayList<>();
         for(Rank rank:rankService.getAll())
