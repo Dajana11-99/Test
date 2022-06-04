@@ -42,7 +42,7 @@ public class FirebaseServiceImpl implements FirebaseService {
         Credentials credentials = GoogleCredentials.fromStream(new FileInputStream(currentDirectory+"/src/main/resources/firebaseToken.json"));
         Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
         storage.create(blobInfo, Files.readAllBytes(file.toPath()));
-        return String.format(DOWNLOAD_URL, URLEncoder.encode(fileName, StandardCharsets.UTF_8));
+        return String.format(DOWNLOAD_URL, URLEncoder.encode(fileName, StandardCharsets.UTF_8.name()));
     }
     private File convertToFile(MultipartFile multipartFile, String fileName) throws IOException
     {
