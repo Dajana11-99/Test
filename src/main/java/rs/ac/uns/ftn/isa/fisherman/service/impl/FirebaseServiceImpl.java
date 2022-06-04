@@ -88,7 +88,6 @@ public class FirebaseServiceImpl implements FirebaseService {
     @Override
     public void uploadCabinImage(MultipartFile newImage,String cabinName) throws IOException {
         String newFileName= upload(newImage);
-      //  download(newFileName);
         Image image = new Image(null,newFileName);
         cabinService.addNewImage(cabinName,image);
     }
@@ -96,7 +95,6 @@ public class FirebaseServiceImpl implements FirebaseService {
     @Override
     public void uploadAdventureImage(MultipartFile newImage,String adventureName) throws IOException {
         String newFileName= upload(newImage);
-       // download(newFileName);
         Image image = new Image(null,newFileName);
         adventureService.addNewImage(adventureName,image);
     }
@@ -104,7 +102,6 @@ public class FirebaseServiceImpl implements FirebaseService {
     @Override
     public void uploadBoatImage(MultipartFile newImage, Boat boat) throws IOException {
         String newFileName= upload(newImage);
-       //download(newFileName);
         Image image = new Image(null,newFileName);
         boatService.addNewImage(boat,image);
     }
